@@ -95,7 +95,7 @@ public class RuleBasedParser implements Parser {
 		try
 		{
 			init(fileName);
-			List pageWordBlockList = null;
+			List<WordBlock> pageWordBlockList = null;
 			PageBlock pageBlock = null;
 			int pageCounter = 1;
 			document = new Document();
@@ -118,7 +118,6 @@ public class RuleBasedParser implements Parser {
 
 						
 				buildChunkBlocks(pageWordBlockList, pageBlock);
-
 				// PageImageOutlineRenderer.createPageImage(pageBlock, path, path
 				// + "afterBuildBlocks" + pageBlock.getPageNumber() + ".png",
 				// 0);
@@ -802,7 +801,7 @@ public class RuleBasedParser implements Parser {
 		boolean appendTablesToEnd = true; 
 		RuleBasedParser parser = new RuleBasedParser(new RTModelFactory());
 		File paperDirectory = new File(
-				"/Users/cartic/Documents/workspace/SciKnowMinePDFExtractionSampleData/sampleData/StevenData");
+				"sources/");
 		FileFilter directoryFilter = new FileFilter() {
 			public boolean accept(File file) {
 				return file.isDirectory() && !file.getName().startsWith(".");
@@ -810,7 +809,7 @@ public class RuleBasedParser implements Parser {
 		};
 
 		RuleBasedChunkClassifier classfier;
-
+                System.out.println("Pré filtrage");
 		File[] epochDirectoryList = paperDirectory
 				.listFiles(directoryFilter);
 		FileFilter fileFilter = new FileFilter() {
@@ -819,11 +818,13 @@ public class RuleBasedParser implements Parser {
 			}
 		};
 		File[] pdfList;
-		for (File epoch : epochDirectoryList) {
-			pdfList = epoch.listFiles(fileFilter);
+		//for (File epoch : epochDirectoryList) {
+		//	pdfList = epoch.listFiles(fileFilter);
+                        pdfList = new File[1];
+                        pdfList[0] = new File("sources/test.pdf");
 			for (File pdf : pdfList) {
-
-				parser.setPath(epoch.getAbsolutePath() + "/");
+                                System.out.println(pdf.getName());
+				parser.setPath(pdfList[0].getAbsolutePath() + "/");
 				classfier = new RuleBasedChunkClassifier(giveRuleFilePath(pdf),
 						parser.modelFactory);
 				/*String prefix = pdf.getAbsolutePath().replaceAll("\\.", "-");
@@ -879,7 +880,7 @@ public class RuleBasedParser implements Parser {
 					e.printStackTrace();
 				}
 
-			}
+			//}
 
 		}
 

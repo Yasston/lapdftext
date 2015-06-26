@@ -63,11 +63,6 @@
 			</snapshots>
 		</repository>  
 
-		<repository>
-			<id>dixiechicks</id>
-			<name>Dixiechicks ISI MRP repository</name>
-			<url>http://dixiechicks.isi.edu:8081/nexus/content/groups/public/</url>
-		</repository>
 	</repositories>
 
 	<dependencies>

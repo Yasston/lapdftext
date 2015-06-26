@@ -176,7 +176,7 @@ public class JPedalExtractor implements Extractor {
 
 			font = getFontData(currentWord, "face");
 			style = getFontData(currentWord, "style");
-			currentWord = Strip.convertToText(currentWord);
+			currentWord = Strip.convertToText(currentWord,false);  //Le false a été inséré arbitrairement
 			
 			int wx1 = roundUp(Float.parseFloat((wordIterator.next() + "")));
 			int wy1 = roundUp(Float.parseFloat((wordIterator.next() + "")));

@@ -81,6 +81,7 @@ public class RuleBasedChunkClassifier implements Classifier<ChunkBlock> {
 		for (ChunkBlock chunk : blockList) {
 			kSession.setGlobal("chunk", chunk);
 			kSession.execute(new ChunkFeatures(chunk, modelFactory));
+                        System.out.println(chunk.getType());
 		}
 		this.kSession = null;
 	}

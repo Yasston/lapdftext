@@ -27,7 +27,7 @@ public class Interface extends javax.swing.JFrame {
 
     private int pageNumb;
     private Document pdf;
-
+    RuleBasedParser rbp;
     /**
      * Creates new form Interface
      */
@@ -60,6 +60,7 @@ public class Interface extends javax.swing.JFrame {
 
     public Interface() {
         initComponents();
+        rbp = new RuleBasedParser(new RTModelFactory());
         pageNumb = 0;
         filepath.setText(System.getProperty("user.dir") + "/test.pdf");
     }
@@ -81,6 +82,11 @@ public class Interface extends javax.swing.JFrame {
         suiv = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         panel = new javax.swing.JPanel();
+        mots = new javax.swing.JCheckBox();
+        sensib = new javax.swing.JSlider();
+        precis = new javax.swing.JLabel();
+        tolerY = new javax.swing.JSlider();
+        tolY = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -125,8 +131,31 @@ public class Interface extends javax.swing.JFrame {
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 810, Short.MAX_VALUE)
+            .addGap(0, 772, Short.MAX_VALUE)
         );
+
+        mots.setText("Afficher mots");
+        mots.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                motsActionPerformed(evt);
+            }
+        });
+
+        sensib.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sensibStateChanged(evt);
+            }
+        });
+
+        precis.setText("Tolérance X : 50%");
+
+        tolerY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tolerYStateChanged(evt);
+            }
+        });
+
+        tolY.setText("Tolérance Y : 50%");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -135,22 +164,38 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(122, 122, 122)
-                        .addComponent(prec)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(charg, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(suiv)
-                        .addContainerGap(133, Short.MAX_VALUE))
+                    .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(parc)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(109, 109, 109)
                         .addComponent(jLabel1)
-                        .addGap(56, 56, 56))
-                    .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(prec)
+                                .addGap(18, 18, 18)
+                                .addComponent(charg, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(precis)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                                .addComponent(tolY)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(suiv)
+                                .addGap(18, 18, 18)
+                                .addComponent(mots)))
+                        .addGap(26, 26, 26))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,12 +205,20 @@ public class Interface extends javax.swing.JFrame {
                     .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(parc)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tolY)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(precis))
+                    .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(charg)
+                    .addComponent(prec)
                     .addComponent(suiv)
-                    .addComponent(prec))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(mots))
+                .addGap(12, 12, 12)
                 .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -174,7 +227,7 @@ public class Interface extends javax.swing.JFrame {
 
     private void chargActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chargActionPerformed
         // TODO add your handling code here:
-        RuleBasedParser rbp = new RuleBasedParser(new RTModelFactory());
+        
         try {
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
@@ -184,9 +237,8 @@ public class Interface extends javax.swing.JFrame {
         } catch (EncryptionException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        verifSuite();
-        pageNumb=0;
-        pdf.affichage(0, panel);
+        //verifSuite();
+        pdf.affichage(pageNumb, panel);
     }//GEN-LAST:event_chargActionPerformed
 
     private void precActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precActionPerformed
@@ -213,6 +265,33 @@ public class Interface extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_parcActionPerformed
+
+    private void motsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_motsActionPerformed
+        // TODO add your handling code here:
+        if (mots.isSelected()) {
+            pdf.setWords(true);
+            pdf.affichage(this.pageNumb, panel);
+        } else {
+            pdf.setWords(false);
+            pdf.affichage(pageNumb, panel);
+        }
+    }//GEN-LAST:event_motsActionPerformed
+
+    private void sensibStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sensibStateChanged
+        // TODO add your handling code here:
+        float mult=(float)(sensib.getValue()/100.0);
+        float mult2=(float)(tolerY.getValue()/100.0);
+        rbp.setMult(mult,mult2);
+        precis.setText("Tolérance X : "+sensib.getValue()+"%");
+    }//GEN-LAST:event_sensibStateChanged
+
+    private void tolerYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tolerYStateChanged
+        // TODO add your handling code here:
+        float mult=(float)(sensib.getValue()/100.0);
+        float mult2=(float)(tolerY.getValue()/100.0);
+        rbp.setMult(mult,mult2);
+        tolY.setText("Tolérance Y : "+tolerY.getValue()+"%");
+    }//GEN-LAST:event_tolerYStateChanged
 
     /**
      * @param args the command line arguments
@@ -254,9 +333,14 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JTextField filepath;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox mots;
     private javax.swing.JPanel panel;
     private javax.swing.JButton parc;
     private javax.swing.JButton prec;
+    private javax.swing.JLabel precis;
+    private javax.swing.JSlider sensib;
     private javax.swing.JButton suiv;
+    private javax.swing.JLabel tolY;
+    private javax.swing.JSlider tolerY;
     // End of variables declaration//GEN-END:variables
 }

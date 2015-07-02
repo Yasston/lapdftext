@@ -27,18 +27,6 @@ no-loop
 		
 end
 
-rule "allnames"
-no-loop
-	activation-group "blockClassification"
-	salience 4
-	when
-		    ChunkFeatures(allNames==true)
-	then 
-		chunk.setType(chunk.ALLNAMES);
-		
-end
-
-
 rule "Header"
 no-loop
 activation-group "blockClassification"
@@ -49,3 +37,17 @@ salience 4
 	then
 		 chunk.setType(chunk.TYPE_HEADER);
 end
+
+rule "allnames"
+no-loop
+	activation-group "blockClassification"
+	salience 3
+	when
+		    ChunkFeatures(allNames==true)
+	then 
+		chunk.setType(chunk.ALLNAMES);
+		
+end
+
+
+

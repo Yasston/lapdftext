@@ -65,6 +65,7 @@ public class JPedalExtractor implements Extractor {
 		// if you do not require XML content, pure text extraction is much
 		// faster.
 		PDFDecoder.useXMLExtraction();
+                //PDFDecoder.useTextExtraction();
 
 		System.setProperty("hacked", "true");
 

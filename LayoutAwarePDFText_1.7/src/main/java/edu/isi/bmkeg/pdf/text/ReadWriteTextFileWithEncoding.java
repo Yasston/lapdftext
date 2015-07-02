@@ -10,11 +10,11 @@ import java.util.Scanner;
 */
 public final class ReadWriteTextFileWithEncoding {
 
-  /** Requires two arguments - the file name, and the encoding to use.  */
+  /** Requires two arguments - the file name, and the encoding to use.  
   public static void main(String... aArgs) throws IOException {
    
   }
-  
+  */
  
   
   /** Write fixed content to the given file. */

@@ -16,19 +16,9 @@ public class RTPageBlock extends RTSpatialRepresentation implements PageBlock {
     private int boxHeight;
     private int boxWidth;
     private Document document;
-    private boolean suite;
-
-    public boolean isSuite() {
-        return suite;
-    }
-
-    public void setSuite(boolean suite) {
-        this.suite = suite;
-    }
-
+    
     public RTPageBlock(int pageNumber, int pageBoxWidth, int pageBoxHeight, Document document) {
         super();
-        suite = false;
         this.pageNumber = pageNumber;
         this.boxHeight = pageBoxHeight;
         this.boxWidth = pageBoxWidth;

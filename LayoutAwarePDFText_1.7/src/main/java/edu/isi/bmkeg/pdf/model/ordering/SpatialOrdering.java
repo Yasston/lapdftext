@@ -214,10 +214,10 @@ public class SpatialOrdering implements Comparator<SpatialEntity> {
 		return false;
 
 	}
-
+/*
 	public static void main(String argsd[]) {
 		Boolean value = null;
 		if (value != null)
 			System.out.println("bklusd");
-	}
+	}*/
 }

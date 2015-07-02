@@ -8,6 +8,7 @@ import edu.isi.bmkeg.pdf.extraction.exceptions.InvalidPopularSpaceValueException
 import edu.isi.bmkeg.pdf.model.Block;
 import edu.isi.bmkeg.pdf.model.ChunkBlock;
 import edu.isi.bmkeg.pdf.model.PageBlock;
+import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.WordBlock;
 import edu.isi.bmkeg.pdf.model.factory.AbstractModelFactory;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
@@ -175,6 +176,19 @@ public class ChunkFeatures {
 		return false;
 	}
 
+        public boolean isAllNames() {
+            String aux = chunk.getchunkText();
+            aux=aux.replaceAll("(<[^><]*>)", "");
+            aux=aux.replaceAll("\\s","#");
+            aux=aux.concat("#");
+            System.out.println(aux);
+            if (aux.matches("([A-Z][^A-Z#]*#)+")){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
 	public int getChunkTextLength() {
 		return chunk.getchunkText().length();
 	}

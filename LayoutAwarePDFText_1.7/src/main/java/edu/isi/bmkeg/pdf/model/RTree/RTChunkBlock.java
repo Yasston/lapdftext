@@ -12,224 +12,252 @@ import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 
 public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
 
-	private Block container;
-	private int mostPopularWordHeight;
-	private int mostPopularWordSpaceWidth;
-	private String mostPopularWordFont;
-	private String mostPopularWordStyle;
-	private String allignment = null;
-	private String type = Block.TYPE_UNCLASSIFIED;
-	private Boolean headerOrFooter=null;
+    private Block container;
+    private int mostPopularWordHeight;
+    private int mostPopularWordSpaceWidth;
+    private String mostPopularWordFont;
+    private String mostPopularWordStyle;
+    private String allignment = null;
+    private String type = Block.TYPE_UNCLASSIFIED;
+    private Boolean headerOrFooter = null;
+    private Boolean predec;
+    private Boolean suiv;
 
-	public RTChunkBlock(int x1, int y1, int x2,int y2) {
-		super(x1, y1, x2, y2);
+    public Boolean getPredec() {
+        return predec;
+    }
 
-	}
+    public Boolean getSuiv() {
+        return suiv;
+    }
 
-	@Override
-	public Block getContainer() {
-		return container;
-	}
+    public void setSuiv(Boolean suiv) {
+        this.suiv = suiv;
+    }
 
-	@Override
-	public int getMostPopularWordHeight() {
+    public void setPredec(Boolean suite) {
+        this.predec = suite;
+    }
 
-		return mostPopularWordHeight;
-	}
+    public RTChunkBlock(int x1, int y1, int x2, int y2) {
+        super(x1, y1, x2, y2);
+        predec = false;
+        suiv = false;
+    }
 
-	public int getMostPopularWordSpaceWidth() {
-		return mostPopularWordSpaceWidth;
-	}
+    @Override
+    public Block getContainer() {
+        return container;
+    }
 
-	public void setMostPopularWordSpaceWidth(int mostPopularWordSpaceWidth) {
-		this.mostPopularWordSpaceWidth = mostPopularWordSpaceWidth;
-	}
+    @Override
+    public int getMostPopularWordHeight() {
 
-	public String getMostPopularWordFont() {
-		return mostPopularWordFont;
-	}
+        return mostPopularWordHeight;
+    }
 
-	public void setMostPopularWordFont(String mostPopularWordFont) {
-		this.mostPopularWordFont = mostPopularWordFont;
-	}
+    public int getMostPopularWordSpaceWidth() {
+        return mostPopularWordSpaceWidth;
+    }
 
-	public void setMostPopularWordHeight(int height) {
-		this.mostPopularWordHeight = height;
-	}
+    public void setMostPopularWordSpaceWidth(int mostPopularWordSpaceWidth) {
+        this.mostPopularWordSpaceWidth = mostPopularWordSpaceWidth;
+    }
 
-	@Override
-	public String getLeftRightMedLine() {
-		if (allignment != null)
-			return allignment;
-		PageBlock parent = (PageBlock) this.getContainer();
-		int median = parent.getMedian();
-		int X1 = this.getX1();
-		int width = this.getWidth();
-		int averageWordHeightForTheDocument = parent.getDocument().getMostPopularWordHeight();
+    public String getMostPopularWordFont() {
+        return mostPopularWordFont;
+    }
 
-		// Conditions for left
-		if (X1 < median
-				&& (X1 + width) < (median + averageWordHeightForTheDocument))
-			return LEFT;
-		// conditions for right
-		if (X1 > median)
-			return RIGHT;
-		// conditions for midline
-		int left = median - X1;
-		int right = X1 + width - median;
-		/*
-		 * Doubtful code if(right <= 0) return LEFT;
-		 */
-		double leftIsToRight = (double) left / (double) right;
-		double rightIsToLeft = (double) right / (double) left;
-		if (leftIsToRight < 0.05)
-			allignment = RIGHT;
-		else if (rightIsToLeft < 0.05)
-			allignment = LEFT;
-		else
-			allignment = MIDLINE;
+    public void setMostPopularWordFont(String mostPopularWordFont) {
+        this.mostPopularWordFont = mostPopularWordFont;
+    }
 
-		return allignment;
-	}
+    public void setMostPopularWordHeight(int height) {
+        this.mostPopularWordHeight = height;
+    }
 
-	public boolean isFlush(String condition, int value) {
-		PageBlock parent = (PageBlock) this.getContainer();
-		int median = parent.getMedian();
-		String leftRightMidline = this.getLeftRightMedLine();
+    @Override
+    public String getLeftRightMedLine() {
+        if (allignment != null) {
+            return allignment;
+        }
+        PageBlock parent = (PageBlock) this.getContainer();
+        int median = parent.getMedian();
+        int X1 = this.getX1();
+        int width = this.getWidth();
+        int averageWordHeightForTheDocument = parent.getDocument().getMostPopularWordHeight();
 
-		int x1 = this.getX1();
-		int x2 = this.getX2();
-		int marginX1 = parent.getMargin()[0];
-		int marginX2 = parent.getMargin()[3];
+        // Conditions for left
+        if (X1 < median
+                && (X1 + width) < (median + averageWordHeightForTheDocument)) {
+            return LEFT;
+        }
+        // conditions for right
+        if (X1 > median) {
+            return RIGHT;
+        }
+        // conditions for midline
+        int left = median - X1;
+        int right = X1 + width - median;
+        /*
+         * Doubtful code if(right <= 0) return LEFT;
+         */
+        double leftIsToRight = (double) left / (double) right;
+        double rightIsToLeft = (double) right / (double) left;
+        if (leftIsToRight < 0.05) {
+            allignment = RIGHT;
+        } else if (rightIsToLeft < 0.05) {
+            allignment = LEFT;
+        } else {
+            allignment = MIDLINE;
+        }
 
-		if (condition.equals(MIDLINE)) {
-			if (leftRightMidline.equals(MIDLINE))
-				return false;
-			else if (leftRightMidline.equals(LEFT)
-					&& Math.abs(x2 - median) < value)
-				return true;
-			else if (leftRightMidline.equals(RIGHT)
-					&& Math.abs(x1 - median) < value)
-				return true;
-		} else if (condition.equals(LEFT)) {
-			if (leftRightMidline.equals(MIDLINE)
-					&& Math.abs(x1 - marginX1) < value)
-				return true;
-			else if (leftRightMidline.equals(LEFT)
-					&& Math.abs(x1 - marginX1) < value)
-				return true;
-			else if (leftRightMidline.equals(RIGHT))
-				return false;
-		} else if (condition.equals(RIGHT)) {
-			if (leftRightMidline.equals(MIDLINE)
-					&& Math.abs(x2 - marginX2) < value)
-				return true;
-			else if (leftRightMidline.equals(LEFT))
-				return false;
-			else if (leftRightMidline.equals(RIGHT)
-					&& Math.abs(x2 - marginX2) < value)
-				return true;
-		}
-		return false;
-	}
+        return allignment;
+    }
 
-	@Override
-	public int getId() {
+    public boolean isFlush(String condition, int value) {
+        PageBlock parent = (PageBlock) this.getContainer();
+        int median = parent.getMedian();
+        String leftRightMidline = this.getLeftRightMedLine();
 
-		return super.getId();
-	}
+        int x1 = this.getX1();
+        int x2 = this.getX2();
+        int marginX1 = parent.getMargin()[0];
+        int marginX2 = parent.getMargin()[3];
 
-	@Override
-	public int getNumberOfLine() {
-		PageBlock parent = (PageBlock) this.container;
-		List<SpatialEntity> wordBlockList = parent.containsByType(this,
-				SpatialOrdering.MIXED_MODE, WordBlock.class);
-		if (wordBlockList.size() == 0)
-			return 0;
-		WordBlock block = (WordBlock) wordBlockList.get(0);
-		int numberOfLines = 1;
-		int lastY = block.getY1() + block.getHeight() / 2;
-		int currentY = lastY;
-		for (SpatialEntity entity : wordBlockList) {
-			lastY = currentY;
-			block = (WordBlock) entity;
-			currentY = block.getY1() + block.getHeight() / 2;
-			if (currentY > lastY + block.getHeight() / 2)
-				numberOfLines++;
+        if (condition.equals(MIDLINE)) {
+            if (leftRightMidline.equals(MIDLINE)) {
+                return false;
+            } else if (leftRightMidline.equals(LEFT)
+                    && Math.abs(x2 - median) < value) {
+                return true;
+            } else if (leftRightMidline.equals(RIGHT)
+                    && Math.abs(x1 - median) < value) {
+                return true;
+            }
+        } else if (condition.equals(LEFT)) {
+            if (leftRightMidline.equals(MIDLINE)
+                    && Math.abs(x1 - marginX1) < value) {
+                return true;
+            } else if (leftRightMidline.equals(LEFT)
+                    && Math.abs(x1 - marginX1) < value) {
+                return true;
+            } else if (leftRightMidline.equals(RIGHT)) {
+                return false;
+            }
+        } else if (condition.equals(RIGHT)) {
+            if (leftRightMidline.equals(MIDLINE)
+                    && Math.abs(x2 - marginX2) < value) {
+                return true;
+            } else if (leftRightMidline.equals(LEFT)) {
+                return false;
+            } else if (leftRightMidline.equals(RIGHT)
+                    && Math.abs(x2 - marginX2) < value) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		}
-		return numberOfLines;
-	}
+    @Override
+    public int getId() {
 
-	@Override
-	public String getchunkText() {
-		List<SpatialEntity> wordBlockList = ((PageBlock) container)
-				.containsByType(this, SpatialOrdering.MIXED_MODE,
-						WordBlock.class);
-		StringBuilder builder = new StringBuilder();
-		for (SpatialEntity entity : wordBlockList) {
-			builder.append(((WordBlock) entity).getWord());
-			if(!((WordBlock) entity).getWord().endsWith("-"))
-			builder.append(" ");
-		}
-		return builder.toString().trim();
+        return super.getId();
+    }
 
-	}
+    @Override
+    public int getNumberOfLine() {
+        PageBlock parent = (PageBlock) this.container;
+        List<SpatialEntity> wordBlockList = parent.containsByType(this,
+                SpatialOrdering.MIXED_MODE, WordBlock.class);
+        if (wordBlockList.size() == 0) {
+            return 0;
+        }
+        WordBlock block = (WordBlock) wordBlockList.get(0);
+        int numberOfLines = 1;
+        int lastY = block.getY1() + block.getHeight() / 2;
+        int currentY = lastY;
+        for (SpatialEntity entity : wordBlockList) {
+            lastY = currentY;
+            block = (WordBlock) entity;
+            currentY = block.getY1() + block.getHeight() / 2;
+            if (currentY > lastY + block.getHeight() / 2) {
+                numberOfLines++;
+            }
 
-	@Override
-	public void setContainer(Block block) {
-		this.container = (PageBlock) block;
+        }
+        return numberOfLines;
+    }
 
-	}
+    @Override
+    public String getchunkText() {
+        List<SpatialEntity> wordBlockList = ((PageBlock) container)
+                .containsByType(this, SpatialOrdering.MIXED_MODE,
+                        WordBlock.class);
+        StringBuilder builder = new StringBuilder();
+        for (SpatialEntity entity : wordBlockList) {
+            builder.append(((WordBlock) entity).getWord());
+            if (!((WordBlock) entity).getWord().endsWith("-")) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString().trim();
 
-	@Override
-	public String getType() {
+    }
 
-		return type;
-	}
+    @Override
+    public void setContainer(Block block) {
+        this.container = (PageBlock) block;
 
-	@Override
-	public void setType(String type) {
-		this.type = type;
+    }
 
-	}
+    @Override
+    public String getType() {
 
-	@Override
-	public ChunkBlock getLastChunkBlock() {
-		
-		List<ChunkBlock> sortedChunkBlockList = ((PageBlock) this
-				.getContainer())
-				.getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+        return type;
+    }
 
-		int index = Collections.binarySearch(sortedChunkBlockList, this,
-				new SpatialOrdering(SpatialOrdering.COLUMN_AWARE_MIXED_MODE));
+    @Override
+    public void setType(String type) {
+        this.type = type;
 
-		return (index <= 0) ? null : sortedChunkBlockList.get(index - 1);
-	}
+    }
 
-	@Override
-	public String getMostPopularWordStyle() {
-		
-		return mostPopularWordStyle;
-	}
+    @Override
+    public ChunkBlock getLastChunkBlock() {
 
-	@Override
-	public void setMostPopularWordStyle(String style) {
-		
-		this.mostPopularWordStyle=style;
-	}
+        List<ChunkBlock> sortedChunkBlockList = ((PageBlock) this
+                .getContainer())
+                .getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
 
-	@Override
-	public Boolean isHeaderOrFooter() {
-		
-		return headerOrFooter;
-	}
+        int index = Collections.binarySearch(sortedChunkBlockList, this,
+                new SpatialOrdering(SpatialOrdering.COLUMN_AWARE_MIXED_MODE));
 
-	@Override
-	public void setHeaderOrFooter(boolean headerOrFooter) {
-	
-		this.headerOrFooter=headerOrFooter;
-	}
-	
+        return (index <= 0) ? null : sortedChunkBlockList.get(index - 1);
+    }
+
+    @Override
+    public String getMostPopularWordStyle() {
+
+        return mostPopularWordStyle;
+    }
+
+    @Override
+    public void setMostPopularWordStyle(String style) {
+
+        this.mostPopularWordStyle = style;
+    }
+
+    @Override
+    public Boolean isHeaderOrFooter() {
+
+        return headerOrFooter;
+    }
+
+    @Override
+    public void setHeaderOrFooter(boolean headerOrFooter) {
+
+        this.headerOrFooter = headerOrFooter;
+    }
 
 }

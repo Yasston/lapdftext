@@ -205,7 +205,7 @@ public class SectionBasedTextExtractor {
 		}
 		return bos.toString();
 	}
-	
+	/*
 	public static void main(String args[]) {
 		String types[] = {ELEMENT_ABSTRACT,ELEMENT_INTRODUCTION,ELEMENT_RESULTS,ELEMENT_DISCUSSION,ELEMENT_MATERIALS_METHODS,ELEMENT_CONCLUSIONS};
 		//String types[] = {ELEMENT_RESULTS};
@@ -227,5 +227,5 @@ public class SectionBasedTextExtractor {
 		System.out.println(sb.toString().trim());
 
 	}
-
+*/
 }

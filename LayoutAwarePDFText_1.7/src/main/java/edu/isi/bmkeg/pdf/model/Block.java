@@ -43,6 +43,7 @@ public interface Block {
 	public static final String TYPE_ABSTRACT_HEADING="abstract.heading";
     public static final String TYPE_ABSTRACT_BODY="abstract.body";
 	
+    public static final String ALLNAMES="allnames"; 
     public static final String TYPE_TITLE="title"; 
     public static final String TYPE_AUTHORS="authors"; 
   

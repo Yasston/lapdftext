@@ -796,7 +796,7 @@ public class RuleBasedParser implements Parser {
 		}
 	}
 
-	public static void main(String args[]) {
+	/*public static void main(String args[]) {
 		boolean appendFiguresToEnd = true;
 		boolean appendTablesToEnd = true; 
 		RuleBasedParser parser = new RuleBasedParser(new RTModelFactory());
@@ -828,7 +828,7 @@ public class RuleBasedParser implements Parser {
 				classfier = new RuleBasedChunkClassifier(giveRuleFilePath(pdf),
 						parser.modelFactory);
 				/*String prefix = pdf.getAbsolutePath().replaceAll("\\.", "-");
-				prefix = prefix.split("-")[2];*/
+				prefix = prefix.split("-")[2];
 				String prefix = pdf.getName();
 				//prefix = prefix.split("-")[2];
 				try {
@@ -884,5 +884,5 @@ public class RuleBasedParser implements Parser {
 
 		}
 
-	}
+	}*/
 }

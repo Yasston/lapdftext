@@ -1,43 +1,25 @@
 package edu.isi.bmkeg.pdf.model;
 
+import edu.isi.bmkeg.pdf.classification.ruleBased.RuleBasedChunkClassifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.isi.bmkeg.pdf.extraction.exceptions.InvalidPopularSpaceValueException;
-import edu.isi.bmkeg.pdf.model.RTree.RTWordBlock;
+import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
+import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
+import edu.isi.bmkeg.pdf.model.RTree.RTPageBlock;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-
-class MyCanvas extends JComponent {
-
-    int x1, x2, x3, x4;
-
-    boolean color;
-
-    public MyCanvas(int x, int a, int b, int c, boolean color) {
-        super();
-        x1 = x;
-        x2 = a;
-        x3 = b;
-        x4 = c;
-        this.color = color;
-    }
-
-    public void paint(Graphics g) {
-        if (color) {
-            g.setColor(Color.red);
-        }
-        g.drawRect(x1, x2, x3, x4);
-    }
-}
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 public class Document {
 
@@ -46,46 +28,48 @@ public class Document {
     private int mostPopularWordHeight = -1;
     private boolean jPedalDecodeFailed;
 
-    public void affichage() {
+    public void affichage(int i, JPanel panel) {
         JFrame window;
-        for (int i = 0; i < pageList.size(); i++) {
-            System.out.println("PAGE NUMERO " + (i + 1));
-            System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
-            List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+        RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier("src/main/resources/rules/rules.drl", new RTModelFactory());
+        classifier.classify(pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE));
+        System.out.println("PAGE NUMERO " + (i + 1));
+        System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
+        List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+        panel.removeAll();
+        panel.repaint();
+        panel.setLayout(null);
+        panel.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
+        for (ChunkBlock chunk : chunkList) {
+            JLabel jlabel;
+            if (((RTChunkBlock) chunk).getSuiv()) {
+                jlabel = new JLabel("<html>" + chunk.getType() + "<br> Ce bloc possède une suite sur la page suivante.</html>", SwingConstants.CENTER);
+            } else if (((RTChunkBlock) chunk).getPredec()) {
+                jlabel = new JLabel("<html>" + chunk.getType() + "<br> Ce bloc est la suite du bloc sur la page précédente.</html>", SwingConstants.CENTER);
+            } else {
+                jlabel = new JLabel(chunk.getType(), SwingConstants.CENTER);
 
-            window = new JFrame();
-            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            window.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
-            window.setVisible(true);
-            for (ChunkBlock chunk : chunkList) {
-                window.getContentPane().add(new MyCanvas(chunk.getX1(), chunk.getY1(), chunk.getWidth(), chunk.getHeight(), true));
-                window.setVisible(true);
-                System.out.println(chunk.getMostPopularWordFont() + " " + chunk.getMostPopularWordStyle() + " " + chunk.getMostPopularWordHeight() + " " + chunk.getX1() + " " + chunk.getX2() + " " + chunk.getY1() + " " + chunk.getY2() + " " + chunk.getchunkText().replaceAll("<[^<>]*>", ""));
-                //Ci dessous affichage des mots.
-                List<SpatialEntity> wordBlockList = ((PageBlock) pageList.get(i))
-                        .containsByType(chunk, SpatialOrdering.MIXED_MODE,
-                                WordBlock.class);
-                for (SpatialEntity entity : wordBlockList) {
-                    window.getContentPane().add(new MyCanvas(entity.getX1(), entity.getY1(), entity.getWidth(), entity.getHeight(), false));
-                    window.setVisible(true);
-                    //System.out.println("X1 = "+entity.getX1());
-                    //System.out.println("Y1 = "+entity.getY1());
-                    //System.out.println("X2 = "+entity.getX2());
-                    //System.out.println("Y2 = "+entity.getY2());
-                    //System.out.println("font = "+((RTWordBlock)entity).getFont());
-                    //System.out.println("style = "+((RTWordBlock)entity).getFontStyle());
-                    //System.out.println("text = "+((RTWordBlock)entity).getWord().replaceAll("<[^<>]*>", ""));
-                }
             }
-            try {
-                System.in.read();
-            } catch (IOException ex) {
-                Logger.getLogger(Document.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            window.setVisible(false);
-            window = null;
+            jlabel.setSize(chunk.getWidth(), chunk.getHeight());
+            jlabel.setLocation(chunk.getX1(), chunk.getY1());
+            jlabel.setBorder(new LineBorder(Color.black));
+            panel.add(jlabel);
+            System.out.println(chunk.getMostPopularWordFont() + " " + chunk.getMostPopularWordStyle() + " " + chunk.getMostPopularWordHeight() + " " + chunk.getX1() + " " + chunk.getX2() + " " + chunk.getY1() + " " + chunk.getY2() + " " + chunk.getchunkText().replaceAll("<[^<>]*>", ""));
+            //Ci dessous affichage des mots.
+            List<SpatialEntity> wordBlockList = ((PageBlock) pageList.get(i))
+                    .containsByType(chunk, SpatialOrdering.MIXED_MODE,
+                            WordBlock.class);
+            /*for (SpatialEntity entity : wordBlockList) {
+             window.getContentPane().add(new MyCanvas(entity.getX1(), entity.getY1(), entity.getWidth(), entity.getHeight(), false));
+             window.setVisible(true);
+             //System.out.println("X1 = "+entity.getX1());
+             //System.out.println("Y1 = "+entity.getY1());
+             //System.out.println("X2 = "+entity.getX2());
+             //System.out.println("Y2 = "+entity.getY2());
+             //System.out.println("font = "+((RTWordBlock)entity).getFont());
+             //System.out.println("style = "+((RTWordBlock)entity).getFontStyle());
+             //System.out.println("text = "+((RTWordBlock)entity).getWord().replaceAll("<[^<>]*>", ""));
+             }*/
         }
-        System.exit(0);
     }
 
     public ArrayList<PageBlock> getPageList() {

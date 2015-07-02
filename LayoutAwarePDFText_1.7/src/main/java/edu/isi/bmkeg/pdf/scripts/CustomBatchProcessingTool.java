@@ -9,7 +9,7 @@ public class CustomBatchProcessingTool
 	private static final String OPERATION_PDFEX_BLOCKIFY_CLASSIFY = "blockifyClassify";
 	private static final String OPERATION_FILTERED_LAYOUTAWARE_FULLTEXT_EXTRACTION = "extractFullText";
 	private static LogTarget logger;
-
+/*
 	public static void main(String args[])
 	{
 		CommandLineFitPipeline pipeline = null;
@@ -166,7 +166,7 @@ public class CustomBatchProcessingTool
 		System.out.println("4. " + SectionBasedTextExtractor.ELEMENT_DISCUSSION);
 		System.out.println("5. " + SectionBasedTextExtractor.ELEMENT_RESULTS);
 		System.out.println("6. " + SectionBasedTextExtractor.ELEMENT_CONCLUSIONS);
-		 */
+		 /
 	}
-
+*/
 }

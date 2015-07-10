@@ -8,7 +8,6 @@ import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.parser.RuleBasedParser;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -27,11 +26,12 @@ public class Interface extends javax.swing.JFrame {
 
     private int pageNumb;
     private Document pdf;
+    private Document aux;
     RuleBasedParser rbp;
+
     /**
      * Creates new form Interface
      */
-
     public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
         ChunkBlock chunk1, chunk2;
         for (int i = 1; i < pdf.getPageList().size(); i++) {
@@ -87,6 +87,7 @@ public class Interface extends javax.swing.JFrame {
         precis = new javax.swing.JLabel();
         tolerY = new javax.swing.JSlider();
         tolY = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -157,6 +158,13 @@ public class Interface extends javax.swing.JFrame {
 
         tolY.setText("Tolérance Y : 50%");
 
+        jCheckBox1.setText("Analyse intelligente");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -165,36 +173,35 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(parc)
-                        .addGap(109, 109, 109)
-                        .addComponent(jLabel1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(parc)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(prec)
-                                .addGap(18, 18, 18)
-                                .addComponent(charg, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel1))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(precis)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
-                                .addComponent(tolY)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(suiv)
-                                .addGap(18, 18, 18)
-                                .addComponent(mots)))
+                                .addGap(12, 12, 12)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(precis)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tolY)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(prec)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(charg, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(suiv)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jCheckBox1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(mots)))))
                         .addGap(26, 26, 26))))
         );
         layout.setVerticalGroup(
@@ -217,7 +224,8 @@ public class Interface extends javax.swing.JFrame {
                     .addComponent(charg)
                     .addComponent(prec)
                     .addComponent(suiv)
-                    .addComponent(mots))
+                    .addComponent(mots)
+                    .addComponent(jCheckBox1))
                 .addGap(12, 12, 12)
                 .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -227,7 +235,7 @@ public class Interface extends javax.swing.JFrame {
 
     private void chargActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chargActionPerformed
         // TODO add your handling code here:
-        
+
         try {
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
@@ -239,6 +247,7 @@ public class Interface extends javax.swing.JFrame {
         }
         //verifSuite();
         pdf.affichage(pageNumb, panel);
+        rbp.affichagexy();
     }//GEN-LAST:event_chargActionPerformed
 
     private void precActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precActionPerformed
@@ -279,19 +288,41 @@ public class Interface extends javax.swing.JFrame {
 
     private void sensibStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sensibStateChanged
         // TODO add your handling code here:
-        float mult=(float)(sensib.getValue()/100.0);
-        float mult2=(float)(tolerY.getValue()/100.0);
-        rbp.setMult(mult,mult2);
-        precis.setText("Tolérance X : "+sensib.getValue()+"%");
+        float mult = (float) (sensib.getValue() / 100.0);
+        float mult2 = (float) (tolerY.getValue() / 100.0);
+        rbp.setMult(mult, mult2);
+        precis.setText("Tolérance X : " + sensib.getValue() + "%");
     }//GEN-LAST:event_sensibStateChanged
 
     private void tolerYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tolerYStateChanged
         // TODO add your handling code here:
-        float mult=(float)(sensib.getValue()/100.0);
-        float mult2=(float)(tolerY.getValue()/100.0);
-        rbp.setMult(mult,mult2);
-        tolY.setText("Tolérance Y : "+tolerY.getValue()+"%");
+        float mult = (float) (sensib.getValue() / 100.0);
+        float mult2 = (float) (tolerY.getValue() / 100.0);
+        rbp.setMult(mult, mult2);
+        tolY.setText("Tolérance Y : " + tolerY.getValue() + "%");
     }//GEN-LAST:event_tolerYStateChanged
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        //rbp.setAnalyse(jCheckBox1.isSelected());
+        if (pdf != null) {
+            if (jCheckBox1.isSelected()) {
+                aux = pdf;
+                pdf.joinBlocks();
+            } else {
+                try {
+                    this.pdf = rbp.parse(filepath.getText());
+                } catch (PdfException ex) {
+                    Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (AccessException ex) {
+                    Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (EncryptionException ex) {
+                    Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            pdf.affichage(pageNumb, panel);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,6 +362,7 @@ public class Interface extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton charg;
     private javax.swing.JTextField filepath;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JCheckBox mots;

@@ -46,6 +46,15 @@ public class RuleBasedParser implements Parser {
     protected String path;
     private float multiplicateur;
     private float multiplicateur2;
+    private boolean analyse;
+
+    public void affichagexy() {
+        System.out.println(eastWest+" "+northSouth);
+    }
+    
+    public void setAnalyse(boolean analyse) {
+        this.analyse = analyse;
+    }
 
     public void setMult(float x, float y) {
         this.multiplicateur = x;
@@ -62,6 +71,7 @@ public class RuleBasedParser implements Parser {
 
     public RuleBasedParser(AbstractModelFactory modelFactory) {
         this.multiplicateur = (float) 0.5;
+        this.analyse = false;
         try {
             pageList = new ArrayList<PageBlock>();
 
@@ -225,27 +235,11 @@ public class RuleBasedParser implements Parser {
         SpatialEntity entity = modelFactory.createWordBlock(topX, topY,
                 bottomX, bottomY, 0, null, null, null);
         TreeSet listOfInteresectingBlock = new TreeSet<SpatialEntity>(
-                new SpatialOrdering(SpatialOrdering.MIXED_MODE));
+                new SpatialOrdering(SpatialOrdering.MIXED_MODE_ABSOLUTE));
+        //System.out.println(wordBlock.getWord().replaceAll("<[^<>]*>", "")+" "+pageWordList.get(pageWordList.indexOf(wordBlock)+1).getWord().replaceAll("<[^<>]*>", ""));
         listOfInteresectingBlock.addAll(pageBlock.intersects(entity, null));
-       
 
-        if (pageWordList.size() > (pageWordList.indexOf(wordBlock) + 1)) {
-            WordBlock wb = pageWordList.get(pageWordList.indexOf(wordBlock) + 1);
-            //Ajout : détection des blocks "suite"
-            if (wordBlock.getWord().endsWith("\\.")) {
-                if (wb.getWord().matches("[a-z0-9].")) {
-                    if (!listOfInteresectingBlock.contains(wb)) {
-                        listOfInteresectingBlock.add(wb);
-                    }
-
-                }
-            } else if (wb.getY1() == wordBlock.getY1() && wb.getY2() == wordBlock.getY2() && wb.getX1() < wordBlock.getX2() + 20) {
-                if (!listOfInteresectingBlock.contains(wb)) {
-                    listOfInteresectingBlock.add(wb);
-                }
-            }
-        }
-             listOfInteresectingBlock.retainAll(pageWordList);
+        listOfInteresectingBlock.retainAll(pageWordList);
         return new ArrayList<WordBlock>(listOfInteresectingBlock);
     }
 

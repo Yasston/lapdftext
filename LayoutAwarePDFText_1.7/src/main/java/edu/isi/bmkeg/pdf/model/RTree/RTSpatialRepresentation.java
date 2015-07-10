@@ -30,6 +30,10 @@ public class RTSpatialRepresentation implements SpatialRepresentation {
 	private List<WordBlock> list = null;
 	private RTree tree;
 
+    public HashMap<Integer, ChunkBlock> getIndexToChunkBlockMap() {
+        return indexToChunkBlockMap;
+    }
+
 	protected RTSpatialRepresentation() {
 
 		this.indexToWordBlockMap = new HashMap<Integer, WordBlock>();

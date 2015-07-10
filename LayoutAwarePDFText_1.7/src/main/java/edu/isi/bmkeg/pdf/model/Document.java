@@ -8,12 +8,18 @@ import edu.isi.bmkeg.pdf.extraction.exceptions.InvalidPopularSpaceValueException
 import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
 import edu.isi.bmkeg.pdf.model.RTree.RTPageBlock;
+import edu.isi.bmkeg.pdf.model.RTree.RTSpatialRepresentation;
 import edu.isi.bmkeg.pdf.model.RTree.RTWordBlock;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -34,13 +40,41 @@ public class Document {
         this.words = words;
     }
 
+    public void joinBlocks() {
+        for (int i = 0; i < pageList.size(); i++) {
+            HashMap<Integer, ChunkBlock> chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
+            Object[] keys = chunks.keySet().toArray();
+            for (int k = 0; k < keys.length; k++) {
+                Integer key = (Integer) keys[k];
+                ChunkBlock value = chunks.get(key);
+                if (value != null) {
+                    int chY = value.getY1();
+                    for (int j = 0; j < keys.length; j++) {
+                        Integer key2 = (Integer) keys[j];
+                        ChunkBlock value2 = chunks.get(key2);
+                        if (value2 != null) {
+                            int ch2Y = value2.getY1();
+                            if (chY == ch2Y & key != key2) {
+                                SpatialEntity spatialEntity = value.union(value2);
+                                value.resize(spatialEntity.getX1(), spatialEntity.getY1(),
+                                        spatialEntity.getWidth(), spatialEntity.getHeight());
+                                chunks.put(key, value);
+                                //chunks.remove(key2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void affichage(int i, JPanel panel) {
         JFrame window;
         RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier("src/main/resources/rules/rules.drl", new RTModelFactory());
-        classifier.classify(pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE));
+        classifier.classify(pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE));
         //System.out.println("PAGE NUMERO " + (i + 1));
         //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
-        List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+        List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE);
         panel.removeAll();
         panel.repaint();
         panel.setLayout(null);
@@ -54,10 +88,9 @@ public class Document {
                     jlabel = new JLabel("<html>" + chunk.getType() + "<br> Ce bloc est la suite du bloc sur la page précédente.</html>", SwingConstants.CENTER);
                 } else {
                     jlabel = new JLabel(chunk.getType(), SwingConstants.CENTER);
-
                 }
             } else {
-                jlabel=new JLabel("",SwingConstants.CENTER);
+                jlabel = new JLabel("", SwingConstants.CENTER);
             }
             jlabel.setSize(chunk.getWidth(), chunk.getHeight());
             jlabel.setLocation(chunk.getX1(), chunk.getY1());

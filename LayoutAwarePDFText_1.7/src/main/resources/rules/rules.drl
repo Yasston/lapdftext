@@ -50,15 +50,3 @@ no-loop
 end
 
 
-
-rule "toto"
-no-loop
-activation-group "blockClassification"
-salience 5
-
-	when
-
-	then
-
-end
-

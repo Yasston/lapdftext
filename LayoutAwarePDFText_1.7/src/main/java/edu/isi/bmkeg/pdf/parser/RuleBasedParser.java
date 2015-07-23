@@ -23,8 +23,10 @@ import edu.isi.bmkeg.pdf.model.Block;
 import edu.isi.bmkeg.pdf.model.ChunkBlock;
 import edu.isi.bmkeg.pdf.model.Document;
 import edu.isi.bmkeg.pdf.model.PageBlock;
+import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.WordBlock;
 import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
+import edu.isi.bmkeg.pdf.model.RTree.RTWordBlock;
 import edu.isi.bmkeg.pdf.model.factory.AbstractModelFactory;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
@@ -33,6 +35,8 @@ import edu.isi.bmkeg.pdf.xml.OpenAccessXMLWriter;
 import edu.isi.bmkeg.utils.FrequencyCounter;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import edu.isi.bmkeg.utils.PageImageOutlineRenderer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RuleBasedParser implements Parser {
 
@@ -47,11 +51,16 @@ public class RuleBasedParser implements Parser {
     private float multiplicateur;
     private float multiplicateur2;
     private boolean analyse;
+    private boolean changementStyle;
+
+    public void setChangementStyle(boolean changementStyle) {
+        this.changementStyle = changementStyle;
+    }
 
     public void affichagexy() {
-        System.out.println(eastWest+" "+northSouth);
+        System.out.println(eastWest + " " + northSouth);
     }
-    
+
     public void setAnalyse(boolean analyse) {
         this.analyse = analyse;
     }
@@ -122,20 +131,24 @@ public class RuleBasedParser implements Parser {
                         .getCurrentPageBoxWidth(), extractor
                         .getCurrentPageBoxHeight(), document);
                 pageList.add(pageBlock);
-                pageWordBlockList = extractor.next();
+                if (extractor.getIsEmptyPage()) {
+                    extractor.setIsEmptyPage(false);
+                } else {
+                    pageWordBlockList = extractor.next();
 
-                idGenerator = pageBlock.initialize(pageWordBlockList, idGenerator);
+                    idGenerator = pageBlock.initialize(pageWordBlockList, idGenerator);
 
-                this.eastWest = pageBlock.getMostPopularWordHeightPage() + pageBlock
-                        .getMostPopularHorizontalSpaceBetweenWordsPage();
-                // System.out.println(this.eastWest);
-                this.northSouth = pageBlock.getMostPopularWordHeightPage() + pageBlock
-                        .getMostPopularVerticalSpaceBetweenWordsPage();
+                    this.eastWest = pageBlock.getMostPopularWordHeightPage() + pageBlock
+                            .getMostPopularHorizontalSpaceBetweenWordsPage();
+                    // System.out.println(this.eastWest);
+                    this.northSouth = pageBlock.getMostPopularWordHeightPage() + pageBlock
+                            .getMostPopularVerticalSpaceBetweenWordsPage();
 
-                buildChunkBlocks(pageWordBlockList, pageBlock);
-                // PageImageOutlineRenderer.createPageImage(pageBlock, path, path
-                // + "afterBuildBlocks" + pageBlock.getPageNumber() + ".png",
-                // 0);
+                    buildChunkBlocks(pageWordBlockList, pageBlock);
+                    // PageImageOutlineRenderer.createPageImage(pageBlock, path, path
+                    // + "afterBuildBlocks" + pageBlock.getPageNumber() + ".png",
+                    // 0);
+                }
 
             }
             if (!document.hasjPedalDecodeFailed()) {
@@ -170,7 +183,9 @@ public class RuleBasedParser implements Parser {
                 document.addPages(pageList);
             }
         } catch (Exception e) {
-            throw new PdfException(e.getMessage());
+
+            Logger.getLogger(RuleBasedParser.class.getName()).log(Level.SEVERE, null, e);
+            //throw new PdfException(e.getMessage());
         }
         return document;
     }
@@ -196,7 +211,7 @@ public class RuleBasedParser implements Parser {
 
             while (wordBlockList.size() != 0) {
 
-                WordBlock wordBlock = wordBlockList.peek();
+                RTWordBlock wordBlock = (RTWordBlock) wordBlockList.peek();
 
                 pageBlock.getDocument().addToWordHeightFrequencyCounter(
                         wordBlock.getHeight());
@@ -204,6 +219,9 @@ public class RuleBasedParser implements Parser {
                 tempList = this.getOverlappingNeighbors(pageBlock, wordBlock,
                         pageWordBlockList);
 
+                if (wordBlock.getFrontiere()) {
+                    ((RTChunkBlock) chunkBlock).setFrontiere(true);
+                }
                 tempList.removeAll(wordBlockList);
                 tempList.removeAll(seenList);
                 wordBlockList.addAll(tempList);
@@ -238,7 +256,22 @@ public class RuleBasedParser implements Parser {
                 new SpatialOrdering(SpatialOrdering.MIXED_MODE_ABSOLUTE));
         //System.out.println(wordBlock.getWord().replaceAll("<[^<>]*>", "")+" "+pageWordList.get(pageWordList.indexOf(wordBlock)+1).getWord().replaceAll("<[^<>]*>", ""));
         listOfInteresectingBlock.addAll(pageBlock.intersects(entity, null));
-
+        if (changementStyle) {
+            Object[] words = listOfInteresectingBlock.toArray();
+            for (int i = 0; i < words.length; i++) {
+                RTWordBlock word = (RTWordBlock) words[i];
+                //if ((word.getY1()+word.getHeight()/2)!=(wordBlock.getY1()+wordBlock.getHeight()/2)) {
+                if (!word.getFont().equals(wordBlock.getFont())) {
+                    word.setFrontiere(true);
+                } else if (!word.getFontStyle().equals(wordBlock.getFontStyle())) {
+                    word.setFrontiere(true);
+                } else if (word.getHeight() != wordBlock.getHeight()) {
+                    word.setFrontiere(true);
+                }
+                listOfInteresectingBlock.remove(word);
+                //}
+            }
+        }
         listOfInteresectingBlock.retainAll(pageWordList);
         return new ArrayList<WordBlock>(listOfInteresectingBlock);
     }
@@ -320,8 +353,7 @@ public class RuleBasedParser implements Parser {
             currentSpace[1] = currentX - (previousX + previousWidth);
             currentSpace[0] = currentX + currentWidth;
 
-            if (currentWidestSpace[1] == -1
-                    || currentSpace[1] > currentWidestSpace[1]) {
+            if (currentWidestSpace[1] == -1 || currentSpace[1] > currentWidestSpace[1]) {
                 currentWidestSpace[0] = currentSpace[0];
                 currentWidestSpace[1] = currentSpace[1];
             }
@@ -346,8 +378,7 @@ public class RuleBasedParser implements Parser {
         /*
          * if (spaceWidthToPageWidth > 0.015) return true; else return false;
          */
-        if (averageWidth > parent
-                .getMostPopularHorizontalSpaceBetweenWordsPage()) {
+        if (averageWidth > parent.getMostPopularHorizontalSpaceBetweenWordsPage()) {
             return true;
         } else {
             return false;
@@ -457,14 +488,10 @@ public class RuleBasedParser implements Parser {
             wordBlock.setContainer(chunkBlock);
 
         }
-        chunkBlock.setMostPopularWordFont((String) fontFrequencyCounter
-                .getMostPopular());
-        chunkBlock.setMostPopularWordHeight(lineHeightFrequnecyCounter
-                .getMostPopular());
-        chunkBlock.setMostPopularWordSpaceWidth(spaceFrequencyCounter
-                .getMostPopular());
-        chunkBlock.setMostPopularWordStyle((String) styleFrequencyCounter
-                .getMostPopular());
+        chunkBlock.setMostPopularWordStyle((String) styleFrequencyCounter.getMostPopular());
+        chunkBlock.setMostPopularWordFont((String) fontFrequencyCounter.getMostPopular());
+        chunkBlock.setMostPopularWordHeight(lineHeightFrequnecyCounter.getMostPopular());
+        chunkBlock.setMostPopularWordSpaceWidth(spaceFrequencyCounter.getMostPopular());
         chunkBlock.setContainer(pageBlock);
         return chunkBlock;
 

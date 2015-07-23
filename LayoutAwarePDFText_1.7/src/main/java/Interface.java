@@ -26,30 +26,14 @@ public class Interface extends javax.swing.JFrame {
 
     private int pageNumb;
     private Document pdf;
-    private Document aux;
     RuleBasedParser rbp;
+
+    private Boolean horiz, vert, fin, analys;
 
     /**
      * Creates new form Interface
      */
-    public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
-        ChunkBlock chunk1, chunk2;
-        for (int i = 1; i < pdf.getPageList().size(); i++) {
-            chunk1 = pdf.getPageList().get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(0);
-            chunk2 = pdf.getPageList().get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(pdf.getPageList().get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() - 1);
-            //System.out.println(chunk1.getMostPopularWordFont() + " " + chunk1.getMostPopularWordStyle() + " " + chunk1.getMostPopularWordHeight() + " " + chunk1.getX1() + " " + chunk1.getX2() + " " + chunk1.getY1() + " " + chunk1.getY2() + " " + chunk1.getchunkText().replaceAll("<[^<>]*>", ""));
-            //System.out.println(chunk2.getMostPopularWordFont() + " " + chunk2.getMostPopularWordStyle() + " " + chunk2.getMostPopularWordHeight() + " " + chunk2.getX1() + " " + chunk2.getX2() + " " + chunk2.getY1() + " " + chunk2.getY2() + " " + chunk2.getchunkText().replaceAll("<[^<>]*>", ""));
-            if (chunk1.getX1() == chunk2.getX1() && chunk1.getX2() == chunk2.getX2()) {
-                if (chunk1.getMostPopularWordFont().equals(chunk2.getMostPopularWordFont())) {
-                    if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
-                        System.out.println("continuité sur la page " + (i + 1));
-                        ((RTChunkBlock) chunk2).setSuiv(true);
-                        ((RTChunkBlock) chunk1).setPredec(true);
-                    }
-                }
-            }
-        }
-    }
+   
 
     public void classify() {
         RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier("src/main/resources/rules/rules.drl", new RTModelFactory());
@@ -63,6 +47,11 @@ public class Interface extends javax.swing.JFrame {
         rbp = new RuleBasedParser(new RTModelFactory());
         pageNumb = 0;
         filepath.setText(System.getProperty("user.dir") + "/test.pdf");
+        rulepath.setText(System.getProperty("user.dir") + "/src/main/resources/rules/rules.drl");
+        horiz = true;
+        vert = true;
+        fin = true;
+        analys = false;
     }
 
     /**
@@ -75,6 +64,7 @@ public class Interface extends javax.swing.JFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
+        parc1 = new javax.swing.JButton();
         filepath = new javax.swing.JTextField();
         parc = new javax.swing.JButton();
         charg = new javax.swing.JButton();
@@ -87,7 +77,32 @@ public class Interface extends javax.swing.JFrame {
         precis = new javax.swing.JLabel();
         tolerY = new javax.swing.JSlider();
         tolY = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        analyse = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        vertFus = new javax.swing.JCheckBox();
+        horizFus = new javax.swing.JCheckBox();
+        tauxVert = new javax.swing.JTextField();
+        tauxHoriz = new javax.swing.JTextField();
+        finParFus = new javax.swing.JCheckBox();
+        jButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        label = new javax.swing.JCheckBox();
+        rulepath = new javax.swing.JTextField();
+        parcrule = new javax.swing.JButton();
+        style = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        anarogn = new javax.swing.JButton();
+        rogn = new javax.swing.JButton();
+        rognraz = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        chevauch = new javax.swing.JCheckBox();
+
+        parc1.setText("Parcourir");
+        parc1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                parc1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,7 +134,8 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("LATOE 2.0");
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
+        jLabel1.setText("LaToe 2.0");
 
         panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panel.setAlignmentX(324.0F);
@@ -128,11 +144,11 @@ public class Interface extends javax.swing.JFrame {
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 616, Short.MAX_VALUE)
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 772, Short.MAX_VALUE)
+            .addGap(0, 867, Short.MAX_VALUE)
         );
 
         mots.setText("Afficher mots");
@@ -158,10 +174,107 @@ public class Interface extends javax.swing.JFrame {
 
         tolY.setText("Tolérance Y : 50%");
 
-        jCheckBox1.setText("Analyse intelligente");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        analyse.setText("Analyse post-parsing");
+        analyse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                analyseActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setBackground(new java.awt.Color(0, 102, 255));
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel2.setText("Paramètres de l'analyse");
+
+        vertFus.setSelected(true);
+        vertFus.setText("Fusion verticale");
+        vertFus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vertFusActionPerformed(evt);
+            }
+        });
+
+        horizFus.setSelected(true);
+        horizFus.setText("Fusion horizontale");
+        horizFus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                horizFusActionPerformed(evt);
+            }
+        });
+
+        tauxVert.setText("1.0");
+
+        tauxHoriz.setText("1.0");
+
+        finParFus.setSelected(true);
+        finParFus.setText("Fusion fin de paragraphe");
+        finParFus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                finParFusActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Actualiser");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel3.setText("Labellisation");
+
+        label.setText("Labelliser");
+        label.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                labelActionPerformed(evt);
+            }
+        });
+
+        parcrule.setText("Sélectionner fichier de règles");
+        parcrule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                parcruleActionPerformed(evt);
+            }
+        });
+
+        style.setText("Filtrer style");
+        style.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                styleActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel4.setText("Redéfinition des bords");
+
+        anarogn.setText("Analyser");
+        anarogn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anarognActionPerformed(evt);
+            }
+        });
+
+        rogn.setText("Rogner");
+        rogn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rognActionPerformed(evt);
+            }
+        });
+
+        rognraz.setText("RAZ");
+        rognraz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rognrazActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel5.setText("Blocs sur plusieurs pages");
+
+        chevauch.setText("Analyser");
+        chevauch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chevauchActionPerformed(evt);
             }
         });
 
@@ -172,62 +285,154 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(parc)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(precis)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tolY)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(prec)
                                         .addGap(18, 18, 18)
                                         .addComponent(charg, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(suiv)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jCheckBox1)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(mots)))))
-                        .addGap(26, 26, 26))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(mots)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(style)
+                                        .addGap(29, 29, 29))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(parc)
+                                        .addGap(10, 10, 10))))
+                            .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(35, 35, 35)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(analyse)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(vertFus)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(tauxVert, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(horizFus)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(tauxHoriz, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(finParFus))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel3)
+                                                .addComponent(label)
+                                                .addComponent(jButton1))
+                                            .addGap(31, 31, 31)))
+                                    .addComponent(jLabel2)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(rulepath, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(parcrule)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(anarogn)
+                                .addGap(18, 18, 18)
+                                .addComponent(rogn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(82, 82, 82)
+                                .addComponent(rognraz))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(46, 46, 46)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel5))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(76, 76, 76)
+                                .addComponent(chevauch))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(precis)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tolY)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(parc)
-                    .addComponent(jLabel1))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tolY)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(precis))
-                    .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(charg)
-                    .addComponent(prec)
-                    .addComponent(suiv)
-                    .addComponent(mots)
-                    .addComponent(jCheckBox1))
                 .addGap(12, 12, 12)
-                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(parc))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(tolY)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(1, 1, 1)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(precis))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(charg)
+                            .addComponent(prec)
+                            .addComponent(suiv)
+                            .addComponent(mots)
+                            .addComponent(style))
+                        .addGap(18, 18, 18)
+                        .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel1)
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(analyse)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(vertFus)
+                            .addComponent(tauxVert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(horizFus)
+                            .addComponent(tauxHoriz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(finParFus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(label)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rulepath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(parcrule)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(anarogn)
+                            .addComponent(rogn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rognraz)
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chevauch)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -245,16 +450,17 @@ public class Interface extends javax.swing.JFrame {
         } catch (EncryptionException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //verifSuite();
-        pdf.affichage(pageNumb, panel);
-        rbp.affichagexy();
+        if (pdf != null) {
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            rbp.affichagexy();
+        }
     }//GEN-LAST:event_chargActionPerformed
 
     private void precActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precActionPerformed
         // TODO add your handling code here:
         if (pageNumb > 0) {
             pageNumb--;
-            pdf.affichage(pageNumb, panel);
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
         }
     }//GEN-LAST:event_precActionPerformed
 
@@ -262,7 +468,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (pageNumb < pdf.getPageList().size() - 1) {
             pageNumb++;
-            pdf.affichage(pageNumb, panel);
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
         }
     }//GEN-LAST:event_suivActionPerformed
 
@@ -277,12 +483,14 @@ public class Interface extends javax.swing.JFrame {
 
     private void motsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_motsActionPerformed
         // TODO add your handling code here:
-        if (mots.isSelected()) {
-            pdf.setWords(true);
-            pdf.affichage(this.pageNumb, panel);
-        } else {
-            pdf.setWords(false);
-            pdf.affichage(pageNumb, panel);
+        if (pdf != null) {
+            if (mots.isSelected()) {
+                pdf.setWords(true);
+                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            } else {
+                pdf.setWords(false);
+                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            }
         }
     }//GEN-LAST:event_motsActionPerformed
 
@@ -302,13 +510,13 @@ public class Interface extends javax.swing.JFrame {
         tolY.setText("Tolérance Y : " + tolerY.getValue() + "%");
     }//GEN-LAST:event_tolerYStateChanged
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void analyseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseActionPerformed
         // TODO add your handling code here:
-        //rbp.setAnalyse(jCheckBox1.isSelected());
         if (pdf != null) {
-            if (jCheckBox1.isSelected()) {
-                aux = pdf;
-                pdf.joinBlocks();
+            if (analyse.isSelected()) {
+                while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+                }
+                analys = true;
             } else {
                 try {
                     this.pdf = rbp.parse(filepath.getText());
@@ -320,9 +528,168 @@ public class Interface extends javax.swing.JFrame {
                     Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            pdf.affichage(pageNumb, panel);
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
         }
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_analyseActionPerformed
+
+    private void vertFusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vertFusActionPerformed
+        // TODO add your handling code here:
+        if (vertFus.isSelected()) {
+            vert = true;
+        } else {
+            vert = false;
+        }
+        if (analys) {
+            try {
+                this.pdf = rbp.parse(filepath.getText());
+            } catch (PdfException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (AccessException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (EncryptionException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+            }
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_vertFusActionPerformed
+
+    private void horizFusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizFusActionPerformed
+        // TODO add your handling code here:
+        if (horizFus.isSelected()) {
+            horiz = true;
+        } else {
+            horiz = false;
+        }
+        if (analys) {
+            try {
+                this.pdf = rbp.parse(filepath.getText());
+            } catch (PdfException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (AccessException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (EncryptionException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+            }
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_horizFusActionPerformed
+
+    private void finParFusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finParFusActionPerformed
+        // TODO add your handling code here:
+        if (finParFus.isSelected()) {
+            fin = true;
+        } else {
+            fin = false;
+        }
+        if (analys) {
+            try {
+                this.pdf = rbp.parse(filepath.getText());
+            } catch (PdfException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (AccessException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (EncryptionException ex) {
+                Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+            }
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_finParFusActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            this.pdf = rbp.parse(filepath.getText());
+        } catch (PdfException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AccessException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (EncryptionException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (analys) {
+            while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+            }
+        }
+        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void parc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parc1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_parc1ActionPerformed
+
+    private void parcruleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parcruleActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
+            rulepath.setText(fc.getSelectedFile().getAbsolutePath());
+        }
+    }//GEN-LAST:event_parcruleActionPerformed
+
+    private void labelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelActionPerformed
+        // TODO add your handling code here:
+        if (pdf != null) {
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_labelActionPerformed
+
+    private void styleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_styleActionPerformed
+        // TODO add your handling code here:
+        rbp.setChangementStyle(style.isSelected());
+        chargActionPerformed(evt);
+    }//GEN-LAST:event_styleActionPerformed
+
+    private void anarognActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anarognActionPerformed
+        // TODO add your handling code here:
+        if (pdf != null) {
+            pdf.rognerAnalyse();
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_anarognActionPerformed
+
+    private void rognActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rognActionPerformed
+        // TODO add your handling code here:
+        if (pdf != null) {
+            pdf.rognerAction();
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+        pdf.setAnalyse(false);
+    }//GEN-LAST:event_rognActionPerformed
+
+    private void rognrazActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rognrazActionPerformed
+        // TODO add your handling code here:
+        try {
+            this.pdf = rbp.parse(filepath.getText());
+        } catch (PdfException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AccessException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (EncryptionException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (analys) {
+            while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+            }
+        }
+        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        pdf.setAnalyse(false);
+    }//GEN-LAST:event_rognrazActionPerformed
+
+    private void chevauchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chevauchActionPerformed
+        // TODO add your handling code here:
+        if (chevauch.isSelected()) {
+
+            pdf.verifSuite();
+        }
+        if (pdf != null) {
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+    }//GEN-LAST:event_chevauchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -354,25 +721,46 @@ public class Interface extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Interface().setVisible(true);
+                Interface i = new Interface();
+                i.setTitle("LaToe 2.0");
+                i.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox analyse;
+    private javax.swing.JButton anarogn;
     private javax.swing.JButton charg;
+    private javax.swing.JCheckBox chevauch;
     private javax.swing.JTextField filepath;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox finParFus;
+    private javax.swing.JCheckBox horizFus;
+    private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JCheckBox label;
     private javax.swing.JCheckBox mots;
     private javax.swing.JPanel panel;
     private javax.swing.JButton parc;
+    private javax.swing.JButton parc1;
+    private javax.swing.JButton parcrule;
     private javax.swing.JButton prec;
     private javax.swing.JLabel precis;
+    private javax.swing.JButton rogn;
+    private javax.swing.JButton rognraz;
+    private javax.swing.JTextField rulepath;
     private javax.swing.JSlider sensib;
+    private javax.swing.JCheckBox style;
     private javax.swing.JButton suiv;
+    private javax.swing.JTextField tauxHoriz;
+    private javax.swing.JTextField tauxVert;
     private javax.swing.JLabel tolY;
     private javax.swing.JSlider tolerY;
+    private javax.swing.JCheckBox vertFus;
     // End of variables declaration//GEN-END:variables
 }

@@ -22,7 +22,23 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
     private Boolean headerOrFooter = null;
     private Boolean predec;
     private Boolean suiv;
+    private Boolean frontiere;
 
+    public Boolean getFrontiere() {
+        return frontiere;
+    }
+
+    public void setFrontiere(Boolean frontiere) {
+        this.frontiere = frontiere;
+    }
+    public Boolean getContientPointFin() {
+        return contientPointFin;
+    }
+
+    public void setContientPointFin(Boolean contientPointFin) {
+        this.contientPointFin = contientPointFin;
+    }
+    private Boolean contientPointFin;
     public Boolean getPredec() {
         return predec;
     }
@@ -41,8 +57,9 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
 
     public RTChunkBlock(int x1, int y1, int x2, int y2) {
         super(x1, y1, x2, y2);
-        predec = false;
-        suiv = false;
+        this.predec = false;
+        this.suiv = false;
+        this.frontiere=false;
     }
 
     @Override

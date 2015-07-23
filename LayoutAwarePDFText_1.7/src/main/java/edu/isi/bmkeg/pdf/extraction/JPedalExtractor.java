@@ -39,7 +39,7 @@ public class JPedalExtractor implements Extractor {
 	int pageCount;
 	private static Document xmlDocument;
 	private static DocumentBuilder docBuilder;
-
+        private Boolean isEmptyPage;
 	private static int pageHeight;
 	private static int pageWidth;
 	private AbstractModelFactory modelFactory;
@@ -54,6 +54,14 @@ public class JPedalExtractor implements Extractor {
 
 	}
 
+    public Boolean getIsEmptyPage() {
+        return isEmptyPage;
+    }
+
+    public void setIsEmptyPage(Boolean isEmptyPage) {
+        this.isEmptyPage = isEmptyPage;
+    }
+
 	public JPedalExtractor(AbstractModelFactory modelFactory)
 			throws FileNotFoundException, IOException, PdfException, Exception {
 		this.modelFactory = modelFactory;
@@ -66,7 +74,7 @@ public class JPedalExtractor implements Extractor {
 		// faster.
 		PDFDecoder.useXMLExtraction();
                 //PDFDecoder.useTextExtraction();
-
+                this.isEmptyPage=false;
 		System.setProperty("hacked", "true");
 
 	}
@@ -199,11 +207,11 @@ public class JPedalExtractor implements Extractor {
 	@Override
 	public boolean hasNext() {
 		if (currentPage <= pageCount) {
-
 			try {
 				decodeFile();
 			} catch (EmptyPDFException e) {
-				return false;
+                            setIsEmptyPage(true);
+                            currentPage++;
 			} catch (Exception e)
 			{
 				return false;

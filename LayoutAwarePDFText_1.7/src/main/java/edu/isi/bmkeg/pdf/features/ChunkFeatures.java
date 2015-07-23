@@ -181,7 +181,6 @@ public class ChunkFeatures {
             aux=aux.replaceAll("(<[^><]*>)", "");
             aux=aux.replaceAll("\\s","#");
             aux=aux.concat("#");
-            System.out.println(aux);
             if (aux.matches("([A-Z][^A-Z#]*#)+")){
                 return true;
             } else {

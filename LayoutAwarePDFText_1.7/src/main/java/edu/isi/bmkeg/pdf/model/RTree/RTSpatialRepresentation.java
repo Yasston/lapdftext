@@ -279,7 +279,8 @@ public class RTSpatialRepresentation implements SpatialRepresentation {
 			mostPopularVerticalSpaceBetweenWords = mostPopular;
 		}
 		if(mostPopularVerticalSpaceBetweenWords==-1){
-			throw new InvalidPopularSpaceValueException("RTSpatialRepresentation.getMostPopularVerticalSpaceBetweenWordsPage");
+                    mostPopularVerticalSpaceBetweenWords=1;
+			//throw new InvalidPopularSpaceValueException("RTSpatialRepresentation.getMostPopularVerticalSpaceBetweenWordsPage");
 		}
 		propagateCalculation();
 		//System.out.println("Returning mostPopularVerticalSpaceBetweenWords"+mostPopularVerticalSpaceBetweenWords);

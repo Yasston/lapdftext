@@ -47,27 +47,30 @@ public class Document {
         this.words = words;
     }
 
-     public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
+    public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
         ChunkBlock chunk1, chunk2;
         for (int i = 1; i < pageList.size(); i++) {
-            chunk1 = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(0);
-            System.out.println(" 1 "+chunk1.getchunkText());
-            chunk2 = pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() - 1);
-            System.out.println(" 2 "+chunk2.getchunkText());
-            if (abs(chunk1.getX1()-chunk2.getX1())<this.getMostPopularWordHeight() && abs(chunk1.getX2()-chunk2.getX2())<this.getMostPopularWordHeight()) {
-                System.out.println("tota");
-                if (chunk1.getMostPopularWordFont().equals(chunk2.getMostPopularWordFont())) {
-                System.out.println("toti");
-                    if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
-                System.out.println("totu");
-                        System.out.println("continuité sur la page " + (i + 1));
-                        ((RTChunkBlock) chunk2).setSuiv(true);
-                        ((RTChunkBlock) chunk1).setPredec(true);
+            if (pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0 && pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0) {
+                chunk1 = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(0);
+                //System.out.println(" 1 "+chunk1.getchunkText());
+                chunk2 = pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() - 1);
+                //System.out.println(" 2 "+chunk2.getchunkText());
+                if (abs(chunk1.getX1() - chunk2.getX1()) < this.getMostPopularWordHeight() && abs(chunk1.getX2() - chunk2.getX2()) < this.getMostPopularWordHeight()) {
+                    //System.out.println("tota");
+                    if (chunk1.getMostPopularWordFont().equals(chunk2.getMostPopularWordFont())) {
+                        //System.out.println("toti");
+                        if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
+                        //System.out.println("totu");
+                            //System.out.println("continuité sur la page " + (i + 1));
+                            ((RTChunkBlock) chunk2).setSuiv(true);
+                            ((RTChunkBlock) chunk1).setPredec(true);
+                        }
                     }
                 }
             }
         }
     }
+
     public void rognerAction() {
         for (int i = 0; i < pageList.size(); i++) {
             HashMap<Integer, ChunkBlock> chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
@@ -146,7 +149,7 @@ public class Document {
                                 }
                                 //Jointure verticale
                             } else if (abs(value.getWidth() - value2.getWidth()) <= mostPopularWordHeight * multVert && vert) {
-                                if (abs(value.getY2() - value2.getY1()) <= mostPopularWordHeight * multVert) {
+                                if (abs(value.getY2() - value2.getY1()) <= mostPopularWordHeight * multVert && value.getMostPopularWordFont() != null && value.getMostPopularWordStyle() != null) {
                                     if (value.getMostPopularWordHeight() == value2.getMostPopularWordHeight()) {
                                         if (value.getMostPopularWordFont().equals(value2.getMostPopularWordFont())) {
                                             //System.out.println("bap");
@@ -162,7 +165,7 @@ public class Document {
                                 }// Détection de la dernière ou première ligne d'un paragraphe
                             } else if (fin && abs(value.getY2() - value2.getY1()) <= mostPopularWordHeight * multVert) {
 
-                                if (((value.getX1() == value2.getX1()) || (value.getX2() == value2.getX2()))) {
+                                if (((value.getX1() == value2.getX1()) || (value.getX2() == value2.getX2())) && value.getMostPopularWordFont() != null && value.getMostPopularWordStyle() != null) {
                                     if (value.getMostPopularWordHeight() == value2.getMostPopularWordHeight()) {
                                         if (value.getMostPopularWordFont().equals(value2.getMostPopularWordFont()) && value.getMostPopularWordStyle().equals(value2.getMostPopularWordStyle())) {
                                             //System.out.println("boop");
@@ -177,6 +180,15 @@ public class Document {
                                     }
                                 }
 
+                            } else if ((value.getX2() > value2.getX1()) && (value.getY2() > value2.getY1()) && (value.getX1() < value2.getX2()) && (value.getY1() < value2.getY2())) {
+                                //System.out.println("boop");
+                                SpatialEntity spatialEntity = value.union(value2);
+                                value.resize(spatialEntity.getX1(), spatialEntity.getY1(), spatialEntity.getWidth(), spatialEntity.getHeight());
+                                chunks.put(key, value);
+                                //System.out.println("avant " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
+                                pageList.get(i).delete(value2, key2);
+                                chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
+                                //System.out.println("après " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                             }
                             //System.out.println("chunk1 :" + key + "(" + value.getX1() + "," + value.getX2() + "," + value.getY1() + "," + value.getY2() + ")" + " chnuk2 :" + key2 + "(" + value2.getX1() + "," + value2.getX2() + "," + value2.getY1() + "," + value2.getY2() + ")");
                         }
@@ -189,18 +201,18 @@ public class Document {
     }
 
     public void affichage(int i, JPanel panel, String rules, Boolean rule) {
-        System.out.println(pageList.size());
+        //System.out.println(pageList.size());
         panel.removeAll();
         panel.repaint();
         panel.setLayout(null);
-        if (pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE)!=null&&pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE).size()>0) {
+        if (pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE) != null && pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE).size() > 0) {
             List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE);
 
             if (rule) {
                 RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier(rules, new RTModelFactory());
                 classifier.classify(chunkList);
             }
-        //System.out.println("PAGE NUMERO " + (i + 1));
+            //System.out.println("PAGE NUMERO " + (i + 1));
             //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
 
             panel.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
@@ -249,7 +261,7 @@ public class Document {
             panel.add(jlabel);
         } else {
             JLabel jlabel = new JLabel("Cette page est vide.", SwingConstants.CENTER);
-            jlabel.setLocation(panel.getWidth()/2,panel.getHeight()/2);
+            jlabel.setLocation(panel.getWidth() / 2, panel.getHeight() / 2);
             panel.add(jlabel);
         }
     }

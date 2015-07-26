@@ -33,8 +33,6 @@ public class Interface extends javax.swing.JFrame {
     /**
      * Creates new form Interface
      */
-   
-
     public void classify() {
         RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier("src/main/resources/rules/rules.drl", new RTModelFactory());
         for (int i = 0; i < pdf.getPageList().size(); i++) {
@@ -96,6 +94,7 @@ public class Interface extends javax.swing.JFrame {
         rognraz = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         chevauch = new javax.swing.JCheckBox();
+        masterbutton = new javax.swing.JButton();
 
         parc1.setText("Parcourir");
         parc1.addActionListener(new java.awt.event.ActionListener() {
@@ -201,7 +200,12 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        tauxVert.setText("1.0");
+        tauxVert.setText("1.5");
+        tauxVert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tauxVertActionPerformed(evt);
+            }
+        });
 
         tauxHoriz.setText("1.0");
 
@@ -278,6 +282,15 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
+        masterbutton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        masterbutton.setForeground(new java.awt.Color(204, 0, 0));
+        masterbutton.setText("Traitement complet");
+        masterbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                masterbuttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -336,11 +349,6 @@ public class Interface extends javax.swing.JFrame {
                                     .addComponent(rulepath, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(parcrule)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(anarogn)
-                                .addGap(18, 18, 18)
-                                .addComponent(rogn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(82, 82, 82)
                                 .addComponent(rognraz))
                             .addGroup(layout.createSequentialGroup()
@@ -351,7 +359,15 @@ public class Interface extends javax.swing.JFrame {
                                 .addComponent(jLabel5))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(76, 76, 76)
-                                .addComponent(chevauch))))
+                                .addComponent(chevauch))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(anarogn)
+                                .addGap(18, 18, 18)
+                                .addComponent(rogn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(masterbutton))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(precis)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -361,7 +377,7 @@ public class Interface extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -384,7 +400,6 @@ public class Interface extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(1, 1, 1)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(charg)
                             .addComponent(prec)
@@ -431,8 +446,10 @@ public class Interface extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chevauch)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(chevauch)
+                        .addGap(18, 18, 18)
+                        .addComponent(masterbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -442,6 +459,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try {
+            pdf=null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -519,6 +537,7 @@ public class Interface extends javax.swing.JFrame {
                 analys = true;
             } else {
                 try {
+                    pdf=null;
                     this.pdf = rbp.parse(filepath.getText());
                 } catch (PdfException ex) {
                     Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -541,6 +560,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
+                pdf=null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -564,6 +584,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
+                pdf=null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -587,6 +608,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
+                pdf=null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -604,6 +626,7 @@ public class Interface extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {
+            pdf=null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -664,6 +687,7 @@ public class Interface extends javax.swing.JFrame {
     private void rognrazActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rognrazActionPerformed
         // TODO add your handling code here:
         try {
+            pdf=null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -690,6 +714,35 @@ public class Interface extends javax.swing.JFrame {
             pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
         }
     }//GEN-LAST:event_chevauchActionPerformed
+
+    private void masterbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_masterbuttonActionPerformed
+        pdf=null;
+        label.setSelected(true);
+        analyse.setSelected(true);
+        chevauch.setSelected(true);
+        analys=true;
+        try {
+            this.pdf = rbp.parse(filepath.getText());
+        } catch (PdfException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AccessException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (EncryptionException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
+        }
+        analys = true;
+        pdf.rognerAnalyse();
+        pdf.rognerAction();
+        pdf.verifSuite();
+        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+    }//GEN-LAST:event_masterbuttonActionPerformed
+
+    private void tauxVertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tauxVertActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tauxVertActionPerformed
 
     /**
      * @param args the command line arguments
@@ -744,6 +797,7 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JCheckBox label;
+    private javax.swing.JButton masterbutton;
     private javax.swing.JCheckBox mots;
     private javax.swing.JPanel panel;
     private javax.swing.JButton parc;

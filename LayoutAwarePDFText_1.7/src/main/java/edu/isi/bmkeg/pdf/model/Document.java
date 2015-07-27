@@ -14,6 +14,7 @@ import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.io.IOException;
 import static java.lang.Math.abs;
 import java.util.HashMap;
@@ -60,13 +61,40 @@ public class Document {
                     if (chunk1.getMostPopularWordFont().equals(chunk2.getMostPopularWordFont())) {
                         //System.out.println("toti");
                         if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
-                        //System.out.println("totu");
+                            //System.out.println("totu");
                             //System.out.println("continuité sur la page " + (i + 1));
                             ((RTChunkBlock) chunk2).setSuiv(true);
                             ((RTChunkBlock) chunk1).setPredec(true);
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void hierarchie() {
+        for (int i = 0; i < pageList.size(); i++) {
+            List<ChunkBlock> chunks = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+            for (int j = 0; j < chunks.size() - 1; j++) {
+                RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(j);
+                RTChunkBlock chunk2 = (RTChunkBlock) chunks.get(j + 1);
+                if (chunk2.getX1() > chunk1.getX1()) {
+                    chunk2.setFather(chunk1);
+                } else if (chunk2.getX1() == chunk1.getX1()) {
+                    chunk2.setFather(chunk1.getFather());
+                }
+                chunk2.setBrother(chunk1);
+            }
+            if (i < pageList.size()) {
+                RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(chunks.size() - 1);
+                List<ChunkBlock> chunks2 = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+                RTChunkBlock chunk2 = (RTChunkBlock) chunks2.get(0);
+                if (chunk2.getX1() > chunk1.getX1()) {
+                    chunk2.setFather(chunk1);
+                } else if (chunk2.getX1() == chunk1.getX1()) {
+                    chunk2.setFather(chunk1.getFather());
+                }
+                chunk2.setBrother(chunk1);
             }
         }
     }
@@ -148,7 +176,7 @@ public class Document {
                                     //System.out.println("après " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                                 }
                                 //Jointure verticale
-                            } else if (abs(value.getWidth() - value2.getWidth()) <= mostPopularWordHeight * multVert && vert) {
+                            } else if ((value.getX1() < value2.getX2() || value.getX2() < value2.getX1()) && vert) {
                                 if (abs(value.getY2() - value2.getY1()) <= mostPopularWordHeight * multVert && value.getMostPopularWordFont() != null && value.getMostPopularWordStyle() != null) {
                                     if (value.getMostPopularWordHeight() == value2.getMostPopularWordHeight()) {
                                         if (value.getMostPopularWordFont().equals(value2.getMostPopularWordFont())) {
@@ -216,7 +244,7 @@ public class Document {
             //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
 
             panel.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
-            for (ChunkBlock chunk : chunkList) {
+            for (final ChunkBlock chunk : chunkList) {
                 JLabel jlabel;
                 if (!words) {
                     if (rule) {
@@ -238,10 +266,12 @@ public class Document {
                 panel.add(jlabel);
                 //System.out.println(chunk.getMostPopularWordFont() + " " + chunk.getMostPopularWordStyle() + " " + chunk.getMostPopularWordHeight() + " " + chunk.getX1() + " " + chunk.getX2() + " " + chunk.getY1() + " " + chunk.getY2() + " " + chunk.getchunkText().replaceAll("<[^<>]*>", ""));
                 //Ci dessous affichage des mots.
+
                 if (words) {
                     List<SpatialEntity> wordBlockList = ((PageBlock) pageList.get(i))
                             .containsByType(chunk, SpatialOrdering.MIXED_MODE,
-                                    WordBlock.class);
+                                    WordBlock.class
+                            );
                     for (SpatialEntity entity : wordBlockList) {
                         jlabel = new JLabel("mot", SwingConstants.CENTER);
                         if (((RTWordBlock) entity).getWord().contains(".")) {
@@ -253,7 +283,35 @@ public class Document {
                         panel.add(jlabel);
                     }
                 }
+                if (((RTChunkBlock) chunk).getFather() != null) {
+                    JLabel lab = new JLabel(/*constructor args here*/) {
+                                @Override
+                                public void paint(Graphics g) {
+                                    super.paint(g);
+                                    g.setColor(Color.blue);
+                                    g.drawLine(chunk.getX1(), chunk.getY1(), ((RTChunkBlock) chunk).getBrother().getX1(), ((RTChunkBlock) chunk).getBrother().getY1());
+                                }
+                            };
+                    lab.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
+                    lab.setLocation(0, 0);
+                    panel.add(lab);
+
+                }
+                if (((RTChunkBlock) chunk).getBrother() != null) {
+                    JLabel lab = new JLabel(/*constructor args here*/) {
+                                @Override
+                                public void paint(Graphics g) {
+                                    super.paint(g);
+                                    g.setColor(Color.red);
+                                    g.drawLine(chunk.getX1(), chunk.getY1(), ((RTChunkBlock) chunk).getBrother().getX1(), ((RTChunkBlock) chunk).getBrother().getY1());
+                                }
+                            };
+                    lab.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
+                    lab.setLocation(0, 0);
+                    panel.add(lab);
+                }
             }
+
             JLabel jlabel = new JLabel();
             jlabel.setSize(x2 - x1, y2 - y1);
             jlabel.setLocation(x1, y1);

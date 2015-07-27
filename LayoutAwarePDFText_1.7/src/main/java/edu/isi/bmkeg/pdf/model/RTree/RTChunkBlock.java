@@ -13,6 +13,8 @@ import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
 
     private Block container;
+    private ChunkBlock father;
+    private ChunkBlock brother;
     private int mostPopularWordHeight;
     private int mostPopularWordSpaceWidth;
     private String mostPopularWordFont;
@@ -24,6 +26,22 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
     private Boolean suiv;
     private Boolean frontiere;
 
+    public ChunkBlock getFather() {
+        return father;
+    }
+
+    public void setFather(ChunkBlock father) {
+        this.father = father;
+    }
+
+    public ChunkBlock getBrother() {
+        return brother;
+    }
+
+    public void setBrother(ChunkBlock brother) {
+        this.brother = brother;
+    }
+    
     public Boolean getFrontiere() {
         return frontiere;
     }

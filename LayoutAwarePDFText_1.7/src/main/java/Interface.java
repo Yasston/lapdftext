@@ -95,6 +95,7 @@ public class Interface extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         chevauch = new javax.swing.JCheckBox();
         masterbutton = new javax.swing.JButton();
+        hierarch = new javax.swing.JCheckBox();
 
         parc1.setText("Parcourir");
         parc1.addActionListener(new java.awt.event.ActionListener() {
@@ -137,6 +138,7 @@ public class Interface extends javax.swing.JFrame {
         jLabel1.setText("LaToe 2.0");
 
         panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panel.setForeground(new java.awt.Color(255, 255, 255));
         panel.setAlignmentX(324.0F);
 
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
@@ -200,16 +202,10 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        tauxVert.setText("1.5");
-        tauxVert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tauxVertActionPerformed(evt);
-            }
-        });
+        tauxVert.setText("0.2");
 
-        tauxHoriz.setText("1.0");
+        tauxHoriz.setText("0.2");
 
-        finParFus.setSelected(true);
         finParFus.setText("Fusion fin de paragraphe");
         finParFus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -241,7 +237,8 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        style.setText("Filtrer style");
+        style.setSelected(true);
+        style.setText(" (ne pas utiliser)");
         style.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 styleActionPerformed(evt);
@@ -291,6 +288,13 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
+        hierarch.setText("Analyse hiérarchique");
+        hierarch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hierarchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -298,6 +302,18 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(precis)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tolY)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -319,65 +335,61 @@ public class Interface extends javax.swing.JFrame {
                                         .addGap(10, 10, 10))))
                             .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(masterbutton)
+                                .addGap(24, 24, 24))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(analyse)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(35, 35, 35)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(analyse)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                            .addComponent(vertFus)
+                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            .addComponent(tauxVert, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                            .addComponent(horizFus)
+                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(tauxHoriz, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                    .addComponent(finParFus))
                                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                    .addComponent(vertFus)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(tauxVert, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                    .addComponent(horizFus)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(tauxHoriz, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addComponent(finParFus))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jLabel3)
-                                                .addComponent(label)
-                                                .addComponent(jButton1))
-                                            .addGap(31, 31, 31)))
-                                    .addComponent(jLabel2)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(rulepath, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(parcrule)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(82, 82, 82)
-                                .addComponent(rognraz))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(46, 46, 46)
-                                .addComponent(jLabel4))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(41, 41, 41)
-                                .addComponent(jLabel5))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(76, 76, 76)
-                                .addComponent(chevauch))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(anarogn)
-                                .addGap(18, 18, 18)
-                                .addComponent(rogn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(masterbutton))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(precis)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sensib, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tolY)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tolerY, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(filepath, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel3)
+                                                        .addComponent(label)
+                                                        .addComponent(jButton1))
+                                                    .addGap(31, 31, 31)))
+                                            .addComponent(jLabel2)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(26, 26, 26)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(rulepath, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(parcrule)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(82, 82, 82)
+                                        .addComponent(rognraz))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(46, 46, 46)
+                                        .addComponent(jLabel4))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(26, 26, 26)
+                                        .addComponent(anarogn)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rogn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(76, 76, 76)
+                                        .addComponent(chevauch))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(41, 41, 41)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(hierarch)
+                                            .addComponent(jLabel5))))
+                                .addGap(0, 0, Short.MAX_VALUE))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +459,9 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chevauch)
-                        .addGap(18, 18, 18)
+                        .addGap(31, 31, 31)
+                        .addComponent(hierarch)
+                        .addGap(36, 36, 36)
                         .addComponent(masterbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
@@ -459,7 +473,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try {
-            pdf=null;
+            pdf = null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -476,17 +490,21 @@ public class Interface extends javax.swing.JFrame {
 
     private void precActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precActionPerformed
         // TODO add your handling code here:
-        if (pageNumb > 0) {
-            pageNumb--;
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        if (pdf != null) {
+            if (pageNumb > 0) {
+                pageNumb--;
+                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            }
         }
     }//GEN-LAST:event_precActionPerformed
 
     private void suivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suivActionPerformed
         // TODO add your handling code here:
-        if (pageNumb < pdf.getPageList().size() - 1) {
-            pageNumb++;
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        if (pdf != null) {
+            if (pageNumb < pdf.getPageList().size() - 1) {
+                pageNumb++;
+                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            }
         }
     }//GEN-LAST:event_suivActionPerformed
 
@@ -495,6 +513,7 @@ public class Interface extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
             filepath.setText(fc.getSelectedFile().getAbsolutePath());
+            pageNumb=0;
         }
 
     }//GEN-LAST:event_parcActionPerformed
@@ -534,10 +553,11 @@ public class Interface extends javax.swing.JFrame {
             if (analyse.isSelected()) {
                 while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
                 }
+                pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()));
                 analys = true;
             } else {
                 try {
-                    pdf=null;
+                    pdf = null;
                     this.pdf = rbp.parse(filepath.getText());
                 } catch (PdfException ex) {
                     Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -560,7 +580,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
-                pdf=null;
+                pdf = null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -584,7 +604,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
-                pdf=null;
+                pdf = null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -608,7 +628,7 @@ public class Interface extends javax.swing.JFrame {
         }
         if (analys) {
             try {
-                pdf=null;
+                pdf = null;
                 this.pdf = rbp.parse(filepath.getText());
             } catch (PdfException ex) {
                 Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -626,7 +646,7 @@ public class Interface extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {
-            pdf=null;
+            pdf = null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -687,7 +707,7 @@ public class Interface extends javax.swing.JFrame {
     private void rognrazActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rognrazActionPerformed
         // TODO add your handling code here:
         try {
-            pdf=null;
+            pdf = null;
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -716,11 +736,11 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_chevauchActionPerformed
 
     private void masterbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_masterbuttonActionPerformed
-        pdf=null;
+        pdf = null;
         label.setSelected(true);
         analyse.setSelected(true);
         chevauch.setSelected(true);
-        analys=true;
+        analys = true;
         try {
             this.pdf = rbp.parse(filepath.getText());
         } catch (PdfException ex) {
@@ -730,9 +750,10 @@ public class Interface extends javax.swing.JFrame {
         } catch (EncryptionException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
         }
+        pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()));
         analys = true;
         pdf.rognerAnalyse();
         pdf.rognerAction();
@@ -740,9 +761,15 @@ public class Interface extends javax.swing.JFrame {
         pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
     }//GEN-LAST:event_masterbuttonActionPerformed
 
-    private void tauxVertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tauxVertActionPerformed
+    private void hierarchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hierarchActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tauxVertActionPerformed
+        if (pdf!=null&&hierarch.isSelected()) {
+            pdf.hierarchie();
+        }
+        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        
+        
+    }//GEN-LAST:event_hierarchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -788,6 +815,7 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JCheckBox chevauch;
     private javax.swing.JTextField filepath;
     private javax.swing.JCheckBox finParFus;
+    private javax.swing.JCheckBox hierarch;
     private javax.swing.JCheckBox horizFus;
     private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;

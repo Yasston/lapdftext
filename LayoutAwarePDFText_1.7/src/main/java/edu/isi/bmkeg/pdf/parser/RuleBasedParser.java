@@ -43,6 +43,7 @@ public class RuleBasedParser implements Parser {
 
     private ArrayList<PageBlock> pageList;
     private JPedalExtractor extractor;
+    private JPedalPageImageExtractor extractorimg;
     private int idGenerator;
     private IntegerFrequencyCounter avgHeightFrequencyCounter;
     private int northSouth;
@@ -86,6 +87,7 @@ public class RuleBasedParser implements Parser {
             pageList = new ArrayList<PageBlock>();
 
             extractor = new JPedalExtractor(modelFactory);
+            extractorimg= new JPedalPageImageExtractor();
             idGenerator = 1;
             avgHeightFrequencyCounter = new IntegerFrequencyCounter(1);
             this.modelFactory = modelFactory;
@@ -108,6 +110,7 @@ public class RuleBasedParser implements Parser {
     private void init(String fileName) throws PdfException, AccessException,
             EncryptionException {
         extractor.init(fileName);
+        extractorimg.init(fileName);
         idGenerator = 1;
         avgHeightFrequencyCounter.reset();
         pageList.clear();

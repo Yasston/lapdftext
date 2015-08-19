@@ -48,7 +48,7 @@ public class Interface extends javax.swing.JFrame {
         rulepath.setText(System.getProperty("user.dir") + "/src/main/resources/rules/rules.drl");
         horiz = true;
         vert = true;
-        fin = true;
+        fin = false;
         analys = false;
     }
 
@@ -513,7 +513,7 @@ public class Interface extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
             filepath.setText(fc.getSelectedFile().getAbsolutePath());
-            pageNumb=0;
+            pageNumb = 0;
         }
 
     }//GEN-LAST:event_parcActionPerformed
@@ -763,12 +763,13 @@ public class Interface extends javax.swing.JFrame {
 
     private void hierarchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hierarchActionPerformed
         // TODO add your handling code here:
-        if (pdf!=null&&hierarch.isSelected()) {
+        if (pdf != null && hierarch.isSelected()) {
             pdf.hierarchie();
         }
-        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
-        
-        
+        if (pdf != null) {
+            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        }
+
     }//GEN-LAST:event_hierarchActionPerformed
 
     /**

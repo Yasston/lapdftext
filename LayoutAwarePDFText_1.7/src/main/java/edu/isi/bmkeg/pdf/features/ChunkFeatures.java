@@ -188,8 +188,19 @@ public class ChunkFeatures {
             }
         }
         
+        public boolean isItem() {
+            String aux = chunk.getchunkText();
+            aux=aux.replaceAll("(<[^><]*>)", "");
+            aux=aux.replaceAll("\\s","");
+            if (aux.matches("([0-9]+|([a-z]|[A-Z]))[-.:)].*")){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
 	public int getChunkTextLength() {
-		return chunk.getchunkText().length();
+            return chunk.getchunkText().length();
 	}
 
 	/**

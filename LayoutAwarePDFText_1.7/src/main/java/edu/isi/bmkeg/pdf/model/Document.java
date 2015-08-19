@@ -74,22 +74,22 @@ public class Document {
 
     public void hierarchie() {
         for (int i = 0; i < pageList.size(); i++) {
-            List<ChunkBlock> chunks = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+            List<ChunkBlock> chunks = pageList.get(i).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
             for (int j = 0; j < chunks.size() - 1; j++) {
                 RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(j);
                 RTChunkBlock chunk2 = (RTChunkBlock) chunks.get(j + 1);
-                if (chunk2.getX1() > chunk1.getX1()) {
+                if (chunk2.getX1() > chunk1.getX1()&&chunk1.getY2()<chunk2.getY1()) {
                     chunk2.setFather(chunk1);
                 } else if (chunk2.getX1() == chunk1.getX1()) {
                     chunk2.setFather(chunk1.getFather());
                 }
                 chunk2.setBrother(chunk1);
             }
-            if (i < pageList.size()) {
+            if (i < pageList.size()-1) {
                 RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(chunks.size() - 1);
-                List<ChunkBlock> chunks2 = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE);
+                List<ChunkBlock> chunks2 = pageList.get(i+1).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
                 RTChunkBlock chunk2 = (RTChunkBlock) chunks2.get(0);
-                if (chunk2.getX1() > chunk1.getX1()) {
+                if (chunk2.getX1() > chunk1.getX1()&&chunk1.getY2()<chunk2.getY1()) {
                     chunk2.setFather(chunk1);
                 } else if (chunk2.getX1() == chunk1.getX1()) {
                     chunk2.setFather(chunk1.getFather());
@@ -289,7 +289,8 @@ public class Document {
                                 public void paint(Graphics g) {
                                     super.paint(g);
                                     g.setColor(Color.blue);
-                                    g.drawLine(chunk.getX1(), chunk.getY1(), ((RTChunkBlock) chunk).getBrother().getX1(), ((RTChunkBlock) chunk).getBrother().getY1());
+                                    g.drawLine(chunk.getX2(), chunk.getY2(), ((RTChunkBlock) chunk).getFather().getX1(), ((RTChunkBlock) chunk).getFather().getY1());
+                                    
                                 }
                             };
                     lab.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
@@ -303,7 +304,8 @@ public class Document {
                                 public void paint(Graphics g) {
                                     super.paint(g);
                                     g.setColor(Color.red);
-                                    g.drawLine(chunk.getX1(), chunk.getY1(), ((RTChunkBlock) chunk).getBrother().getX1(), ((RTChunkBlock) chunk).getBrother().getY1());
+                                    g.drawLine(chunk.getX1(), chunk.getY1(), ((RTChunkBlock) chunk).getBrother().getX2(), ((RTChunkBlock) chunk).getBrother().getY2());
+                                    //g.drawArc(chunk.getX1(), chunk.getY1(),50, ((RTChunkBlock) chunk).getBrother().getY1()-chunk.getY1(), 45, 0);
                                 }
                             };
                     lab.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());

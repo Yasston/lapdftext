@@ -483,7 +483,7 @@ public class Interface extends javax.swing.JFrame {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (pdf != null) {
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel, label.isSelected());
             rbp.affichagexy();
         }
     }//GEN-LAST:event_chargActionPerformed
@@ -493,7 +493,7 @@ public class Interface extends javax.swing.JFrame {
         if (pdf != null) {
             if (pageNumb > 0) {
                 pageNumb--;
-                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+                pdf.affichage(pageNumb, panel,label.isSelected());
             }
         }
     }//GEN-LAST:event_precActionPerformed
@@ -503,7 +503,7 @@ public class Interface extends javax.swing.JFrame {
         if (pdf != null) {
             if (pageNumb < pdf.getPageList().size() - 1) {
                 pageNumb++;
-                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+                pdf.affichage(pageNumb, panel,  label.isSelected());
             }
         }
     }//GEN-LAST:event_suivActionPerformed
@@ -523,10 +523,10 @@ public class Interface extends javax.swing.JFrame {
         if (pdf != null) {
             if (mots.isSelected()) {
                 pdf.setWords(true);
-                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+                pdf.affichage(pageNumb, panel,  label.isSelected());
             } else {
                 pdf.setWords(false);
-                pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+                pdf.affichage(pageNumb, panel,  label.isSelected());
             }
         }
     }//GEN-LAST:event_motsActionPerformed
@@ -567,7 +567,7 @@ public class Interface extends javax.swing.JFrame {
                     Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,  label.isSelected());
         }
     }//GEN-LAST:event_analyseActionPerformed
 
@@ -591,7 +591,7 @@ public class Interface extends javax.swing.JFrame {
             }
             while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
             }
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,  label.isSelected());
         }
     }//GEN-LAST:event_vertFusActionPerformed
 
@@ -615,7 +615,7 @@ public class Interface extends javax.swing.JFrame {
             }
             while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
             }
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel, label.isSelected());
         }
     }//GEN-LAST:event_horizFusActionPerformed
 
@@ -639,7 +639,7 @@ public class Interface extends javax.swing.JFrame {
             }
             while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
             }
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,  label.isSelected());
         }
     }//GEN-LAST:event_finParFusActionPerformed
 
@@ -659,7 +659,7 @@ public class Interface extends javax.swing.JFrame {
             while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
             }
         }
-        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        pdf.affichage(pageNumb, panel,  label.isSelected());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void parc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parc1ActionPerformed
@@ -677,7 +677,8 @@ public class Interface extends javax.swing.JFrame {
     private void labelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labelActionPerformed
         // TODO add your handling code here:
         if (pdf != null) {
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.classif(rulepath.getText());
+            pdf.affichage(pageNumb, panel,label.isSelected());
         }
     }//GEN-LAST:event_labelActionPerformed
 
@@ -691,7 +692,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (pdf != null) {
             pdf.rognerAnalyse();
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,label.isSelected());
         }
     }//GEN-LAST:event_anarognActionPerformed
 
@@ -699,7 +700,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (pdf != null) {
             pdf.rognerAction();
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,label.isSelected());
         }
         pdf.setAnalyse(false);
     }//GEN-LAST:event_rognActionPerformed
@@ -720,7 +721,7 @@ public class Interface extends javax.swing.JFrame {
             while (pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText())) > pdf.joinBlocks(vert, horiz, fin, Float.parseFloat(tauxVert.getText()), Float.parseFloat(tauxHoriz.getText()))) {
             }
         }
-        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        pdf.affichage(pageNumb, panel, label.isSelected());
         pdf.setAnalyse(false);
     }//GEN-LAST:event_rognrazActionPerformed
 
@@ -731,7 +732,7 @@ public class Interface extends javax.swing.JFrame {
             pdf.verifSuite();
         }
         if (pdf != null) {
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel, label.isSelected());
         }
     }//GEN-LAST:event_chevauchActionPerformed
 
@@ -758,7 +759,8 @@ public class Interface extends javax.swing.JFrame {
         pdf.rognerAnalyse();
         pdf.rognerAction();
         pdf.verifSuite();
-        pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+        pdf.classif(rulepath.getText());
+        pdf.affichage(pageNumb, panel,label.isSelected());
     }//GEN-LAST:event_masterbuttonActionPerformed
 
     private void hierarchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hierarchActionPerformed
@@ -767,7 +769,7 @@ public class Interface extends javax.swing.JFrame {
             pdf.hierarchie();
         }
         if (pdf != null) {
-            pdf.affichage(pageNumb, panel, rulepath.getText(), label.isSelected());
+            pdf.affichage(pageNumb, panel,label.isSelected());
         }
 
     }//GEN-LAST:event_hierarchActionPerformed

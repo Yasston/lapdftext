@@ -72,29 +72,56 @@ public class Document {
         }
     }
 
+    public void checkHierarchie(RTChunkBlock chunk1, RTChunkBlock chunk2, RTChunkBlock def) {
+        if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && !(chunk2.getType().equals("title") || chunk2.getType().equals("header")) && chunk1.getY2() <= chunk2.getY1()) {
+            System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+            chunk2.setFather(chunk1);
+        } else if (chunk2.getX1() > chunk1.getX1() && chunk1.getY2() <= chunk2.getY1()) {
+            System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", ""));
+            chunk2.setFather(chunk1);
+        } else if (chunk1.getFather() != null) {
+            if ((!(chunk1.getType().equals("title") || chunk1.getType().equals("header"))) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                checkHierarchie(((RTChunkBlock) chunk1.getFather()), chunk2, def);
+            } else if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                chunk2.setBrother(chunk1);
+                chunk2.setFather(chunk1.getFather());
+            } else if (abs(chunk2.getX1() - chunk1.getX1()) < 10) {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                chunk2.setBrother(chunk1);
+                chunk2.setFather(chunk1.getFather());
+            } else {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                checkHierarchie(((RTChunkBlock) chunk1.getFather()), chunk2, def);
+            }
+        } else {
+            chunk2.setBrother(chunk1);
+            if (chunk1.getFather() != null) {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                chunk2.setFather(chunk1.getFather());
+            } else {
+                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
+                chunk1.setFather(def);
+                chunk2.setFather(def);
+            }
+        }
+    }
+
     public void hierarchie() {
+        RTChunkBlock def = (RTChunkBlock) pageList.get(0).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).get(0);
         for (int i = 0; i < pageList.size(); i++) {
             List<ChunkBlock> chunks = pageList.get(i).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
             for (int j = 0; j < chunks.size() - 1; j++) {
                 RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(j);
                 RTChunkBlock chunk2 = (RTChunkBlock) chunks.get(j + 1);
-                if (chunk2.getX1() > chunk1.getX1()&&chunk1.getY2()<chunk2.getY1()) {
-                    chunk2.setFather(chunk1);
-                } else if (chunk2.getX1() == chunk1.getX1()) {
-                    chunk2.setFather(chunk1.getFather());
-                }
-                chunk2.setBrother(chunk1);
+                checkHierarchie(chunk1, chunk2, def);
             }
-            if (i < pageList.size()-1) {
+            if (i < pageList.size() - 1) {
                 RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(chunks.size() - 1);
-                List<ChunkBlock> chunks2 = pageList.get(i+1).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
+                List<ChunkBlock> chunks2 = pageList.get(i + 1).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
                 RTChunkBlock chunk2 = (RTChunkBlock) chunks2.get(0);
-                if (chunk2.getX1() > chunk1.getX1()&&chunk1.getY2()<chunk2.getY1()) {
-                    chunk2.setFather(chunk1);
-                } else if (chunk2.getX1() == chunk1.getX1()) {
-                    chunk2.setFather(chunk1.getFather());
-                }
-                chunk2.setBrother(chunk1);
+                checkHierarchie(chunk1, chunk2, def);
             }
         }
     }
@@ -228,18 +255,24 @@ public class Document {
         return x;
     }
 
-    public void affichage(int i, JPanel panel, String rules, Boolean rule) {
+    public void classif(String rules) {
+        for (int i = 0; i < pageList.size(); i++) {
+            if (pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE) != null && pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE).size() > 0) {
+                List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE);
+                RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier(rules, new RTModelFactory());
+                classifier.classify(chunkList);
+            }
+        }
+         
+    }
+
+    public void affichage(int i, JPanel panel,boolean rule ) {
         //System.out.println(pageList.size());
         panel.removeAll();
         panel.repaint();
         panel.setLayout(null);
         if (pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE) != null && pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE).size() > 0) {
             List<ChunkBlock> chunkList = pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE);
-
-            if (rule) {
-                RuleBasedChunkClassifier classifier = new RuleBasedChunkClassifier(rules, new RTModelFactory());
-                classifier.classify(chunkList);
-            }
             //System.out.println("PAGE NUMERO " + (i + 1));
             //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
 
@@ -290,7 +323,7 @@ public class Document {
                                     super.paint(g);
                                     g.setColor(Color.blue);
                                     g.drawLine(chunk.getX2(), chunk.getY2(), ((RTChunkBlock) chunk).getFather().getX1(), ((RTChunkBlock) chunk).getFather().getY1());
-                                    
+
                                 }
                             };
                     lab.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());

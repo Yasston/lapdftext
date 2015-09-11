@@ -9,22 +9,51 @@ import edu.isi.bmkeg.pdf.model.PageBlock;
 import edu.isi.bmkeg.pdf.model.WordBlock;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
+import java.util.ArrayList;
 
 public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
 
     private Block container;
     private ChunkBlock father;
     private ChunkBlock brother;
+    ArrayList<ChunkBlock> sons;
+    private ChunkBlock otherbrother;
     private int mostPopularWordHeight;
     private int mostPopularWordSpaceWidth;
     private String mostPopularWordFont;
     private String mostPopularWordStyle;
     private String allignment = null;
     private String type = Block.TYPE_UNCLASSIFIED;
+    private String type_annote = Block.TYPE_UNCLASSIFIED;
     private Boolean headerOrFooter = null;
     private Boolean predec;
     private Boolean suiv;
-    private Boolean frontiere;
+
+    public ArrayList<ChunkBlock> getSons() {
+        return sons;
+    }
+
+    public String getType_annote() {
+        return type_annote;
+    }
+
+    public void setType_annote(String type_annote) {
+        this.type_annote = type_annote;
+    }
+
+    
+
+    public void addSon(ChunkBlock son) {
+        sons.add(son);
+    }
+
+    public ChunkBlock getOtherbrother() {
+        return otherbrother;
+    }
+
+    public void setOtherbrother(ChunkBlock otherbrother) {
+        this.otherbrother = otherbrother;
+    }
 
     public ChunkBlock getFather() {
         return father;
@@ -42,13 +71,6 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
         this.brother = brother;
     }
     
-    public Boolean getFrontiere() {
-        return frontiere;
-    }
-
-    public void setFrontiere(Boolean frontiere) {
-        this.frontiere = frontiere;
-    }
     public Boolean getContientPointFin() {
         return contientPointFin;
     }
@@ -77,7 +99,7 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
         super(x1, y1, x2, y2);
         this.predec = false;
         this.suiv = false;
-        this.frontiere=false;
+        sons=new ArrayList<ChunkBlock>();
     }
 
     @Override

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Mozilla Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Adobe CMap resources are covered by their own copyright but the same license:
+
+    Copyright 1990-2015 Adobe Systems Incorporated.
+
+See https://github.com/adobe-type-tools/cmap-resources
+-->
+<html dir="ltr" mozdisallowselectionprint="" moznomarginboxes=""><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <title>PDF.js viewer</title>
+
+
+    <link rel="stylesheet" href="viewer_data/viewer.css">
+
+
+
+
+
+
+<!-- This snippet is used in production (included from viewer.html) -->
+<link rel="resource" type="application/l10n" href="http://www.researchgate.net/c/nuexgl/javascript/lib/pdfjs/web/locale/locale.properties">
+<script src="viewer_data/pdf.js"></script>
+
+
+  <style id="PDFJS_FONT_STYLE_TAG"></style></head>
+
+  <body tabindex="1" class="">
+    <div id="outerContainer">
+
+      <div id="sidebarContainer">
+        <div id="toolbarSidebar">
+          <div class="splitToolbarButton toggled">
+            <button id="viewThumbnail" class="toolbarButton group toggled" title="Show Thumbnails" tabindex="2" data-l10n-id="thumbs">
+               <span data-l10n-id="thumbs_label">Thumbnails</span>
+            </button>
+            <button disabled="disabled" id="viewOutline" class="toolbarButton group" title="Show Document Outline" tabindex="3" data-l10n-id="outline">
+               <span data-l10n-id="outline_label">Document Outline</span>
+            </button>
+            <button disabled="disabled" id="viewAttachments" class="toolbarButton group" title="Show Attachments" tabindex="4" data-l10n-id="attachments">
+               <span data-l10n-id="attachments_label">Attachments</span>
+            </button>
+          </div>
+        </div>
+        <div id="sidebarContent">
+          <div id="thumbnailView">
+          <a title="Page 1" href="#page=1"><div class="thumbnail selected" id="thumbnailContainer1"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 2" href="#page=2"><div class="thumbnail" id="thumbnailContainer2"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 3" href="#page=3"><div class="thumbnail" id="thumbnailContainer3"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 4" href="#page=4"><div class="thumbnail" id="thumbnailContainer4"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 5" href="#page=5"><div class="thumbnail" id="thumbnailContainer5"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 6" href="#page=6"><div class="thumbnail" id="thumbnailContainer6"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 7" href="#page=7"><div class="thumbnail" id="thumbnailContainer7"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a><a title="Page 8" href="#page=8"><div class="thumbnail" id="thumbnailContainer8"><div style="width: 100px; height: 140px;" class="thumbnailSelectionRing"></div></div></a></div>
+          <div id="outlineView" class="hidden"></div>
+          <div id="attachmentsView" class="hidden"></div>
+        </div>
+      </div>  <!-- sidebarContainer -->
+
+      <div id="mainContainer">
+        <div class="findbar hidden doorHanger hiddenSmallView" id="findbar">
+          <label for="findInput" class="toolbarLabel" data-l10n-id="find_label">Find:</label>
+          <input id="findInput" class="toolbarField" tabindex="91">
+          <div class="splitToolbarButton">
+            <button class="toolbarButton findPrevious" title="" id="findPrevious" tabindex="92" data-l10n-id="find_previous">
+              <span data-l10n-id="find_previous_label">Previous</span>
+            </button>
+            <div class="splitToolbarButtonSeparator"></div>
+            <button class="toolbarButton findNext" title="" id="findNext" tabindex="93" data-l10n-id="find_next">
+              <span data-l10n-id="find_next_label">Next</span>
+            </button>
+          </div>
+          <input id="findHighlightAll" class="toolbarField" tabindex="94" type="checkbox">
+          <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">Highlight all</label>
+          <input id="findMatchCase" class="toolbarField" tabindex="95" type="checkbox">
+          <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
+          <span id="findMsg" class="toolbarLabel"></span>
+        </div>  <!-- findbar -->
+
+        <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
+          <div style="max-height: 678px;" id="secondaryToolbarButtonContainer">
+            <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode visibleLargeView" title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">
+              <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+            </button>
+
+            <!--<button id="secondaryOpenFile" class="secondaryToolbarButton openFile visibleLargeView" title="Open File" tabindex="52" data-l10n-id="open_file">-->
+              <!--<span data-l10n-id="open_file_label">Open</span>-->
+            <!--</button>-->
+
+            <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
+              <span data-l10n-id="print_label">Print</span>
+            </button>
+
+            <button id="secondaryDownload" class="secondaryToolbarButton download visibleMediumView" title="Download" tabindex="54" data-l10n-id="download">
+              <span data-l10n-id="download_label">Download</span>
+            </button>
+
+            <!--<a href="#" id="secondaryViewBookmark" class="secondaryToolbarButton bookmark visibleSmallView" title="Current view (copy or open in new window)" tabindex="55" data-l10n-id="bookmark">-->
+              <!--<span data-l10n-id="bookmark_label">Current View</span>-->
+            <!--</a>-->
+
+            <div class="horizontalToolbarSeparator visibleLargeView"></div>
+
+            <button disabled="disabled" id="firstPage" class="secondaryToolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
+              <span data-l10n-id="first_page_label">Go to First Page</span>
+            </button>
+            <button id="lastPage" class="secondaryToolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
+              <span data-l10n-id="last_page_label">Go to Last Page</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="pageRotateCw" class="secondaryToolbarButton rotateCw" title="Rotate Clockwise" tabindex="58" data-l10n-id="page_rotate_cw">
+              <span data-l10n-id="page_rotate_cw_label">Rotate Clockwise</span>
+            </button>
+            <button id="pageRotateCcw" class="secondaryToolbarButton rotateCcw" title="Rotate Counterclockwise" tabindex="59" data-l10n-id="page_rotate_ccw">
+              <span data-l10n-id="page_rotate_ccw_label">Rotate Counterclockwise</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="toggleHandTool" class="secondaryToolbarButton handTool" title="Enable hand tool" tabindex="60" data-l10n-id="hand_tool_enable">
+              <span data-l10n-id="hand_tool_enable_label">Enable hand tool</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="documentProperties" class="secondaryToolbarButton documentProperties" title="Document Properties…" tabindex="61" data-l10n-id="document_properties">
+              <span data-l10n-id="document_properties_label">Document Properties…</span>
+            </button>
+          </div>
+        </div>  <!-- secondaryToolbar -->
+
+        <div class="toolbar">
+          <div id="toolbarContainer">
+            <div id="toolbarViewer">
+              <div id="toolbarViewerLeft">
+                <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar">
+                  <span data-l10n-id="toggle_sidebar_label">Toggle Sidebar</span>
+                </button>
+                <div class="toolbarButtonSpacer"></div>
+                <button id="viewFind" class="toolbarButton group hiddenSmallView" title="Find in Document" tabindex="12" data-l10n-id="findbar">
+                   <span data-l10n-id="findbar_label">Find</span>
+                </button>
+                <div class="splitToolbarButton">
+                  <button disabled="disabled" class="toolbarButton pageUp" title="Previous Page" id="previous" tabindex="13" data-l10n-id="previous">
+                    <span data-l10n-id="previous_label">Previous</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button class="toolbarButton pageDown" title="Next Page" id="next" tabindex="14" data-l10n-id="next">
+                    <span data-l10n-id="next_label">Next</span>
+                  </button>
+                </div>
+                <label id="pageNumberLabel" class="toolbarLabel" for="pageNumber" data-l10n-id="page_label">Page: </label>
+                <input max="8" id="pageNumber" class="toolbarField pageNumber" value="1" size="4" min="1" tabindex="15" type="number">
+                <span id="numPages" class="toolbarLabel">of 8</span>
+              </div>
+              <div id="toolbarViewerRight">
+                <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView" title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
+                  <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+                </button>
+
+                <!--<button id="openFile" class="toolbarButton openFile hiddenLargeView" title="Open File" tabindex="32" data-l10n-id="open_file">-->
+                  <!--<span data-l10n-id="open_file_label">Open</span>-->
+                <!--</button>-->
+
+                <button id="print" class="toolbarButton print hiddenMediumView" title="Print" tabindex="33" data-l10n-id="print">
+                  <span data-l10n-id="print_label">Print</span>
+                </button>
+
+                <button id="download" class="toolbarButton download hiddenMediumView" title="Download" tabindex="34" data-l10n-id="download">
+                  <span data-l10n-id="download_label">Download</span>
+                </button>
+                <!--<a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView" title="Current view (copy or open in new window)" tabindex="35" data-l10n-id="bookmark">-->
+                  <!--<span data-l10n-id="bookmark_label">Current View</span>-->
+                <!--</a>-->
+
+                <div class="verticalToolbarSeparator hiddenSmallView"></div>
+
+                <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
+                  <span data-l10n-id="tools_label">Tools</span>
+                </button>
+              </div>
+              <div class="outerCenter">
+                <div class="innerCenter" id="toolbarViewerMiddle">
+                  <div class="splitToolbarButton">
+                    <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" data-l10n-id="zoom_out">
+                      <span data-l10n-id="zoom_out_label">Zoom Out</span>
+                    </button>
+                    <div class="splitToolbarButtonSeparator"></div>
+                    <button id="zoomIn" class="toolbarButton zoomIn" title="Zoom In" tabindex="22" data-l10n-id="zoom_in">
+                      <span data-l10n-id="zoom_in_label">Zoom In</span>
+                     </button>
+                  </div>
+                  <span style="min-width: 124px; max-width: 124px;" id="scaleSelectContainer" class="dropdownToolbarButton">
+                     <select style="min-width: 146px;" id="scaleSelect" title="Zoom" tabindex="23" data-l10n-id="zoom">
+                      <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="page_scale_auto">Automatic Zoom</option>
+                      <option id="pageActualOption" title="" value="page-actual" data-l10n-id="page_scale_actual">Actual Size</option>
+                      <option id="pageFitOption" title="" value="page-fit" data-l10n-id="page_scale_fit">Fit Page</option>
+                      <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width">Full Width</option>
+                      <option id="customScaleOption" title="" value="custom"></option>
+                      <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 50 }">50%</option>
+                      <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 75 }">75%</option>
+                      <option title="" value="1" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 100 }">100%</option>
+                      <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 125 }">125%</option>
+                      <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 150 }">150%</option>
+                      <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 200 }">200%</option>
+                      <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 300 }">300%</option>
+                      <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args="{ &quot;scale&quot;: 400 }">400%</option>
+                    </select>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div style="width: calc(100% - 17px);" class="hidden" id="loadingBar">
+              <div style="height: 100%; width: 100%;" class="progress">
+                <div class="glimmer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <menu type="context" id="viewerContextMenu">
+          <menuitem id="contextFirstPage" label="First Page" data-l10n-id="first_page"></menuitem>
+          <menuitem id="contextLastPage" label="Last Page" data-l10n-id="last_page"></menuitem>
+          <menuitem id="contextPageRotateCw" label="Rotate Clockwise" data-l10n-id="page_rotate_cw"></menuitem>
+          <menuitem id="contextPageRotateCcw" label="Rotate Counter-Clockwise" data-l10n-id="page_rotate_ccw"></menuitem>
+        </menu>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"><div data-loaded="true" data-page-number="1" style="width: 923px; height: 1305px;" class="page" id="pageContainer1"><div class="canvasWrapper" style="width: 923px; height: 1305px;"><canvas style="width: 923px; height: 1305px;" height="1305" width="923" id="page1"></canvas></div><div style="width: 923px; height: 1305px;" class="textLayer"><div data-canvas-width="548.4158075362806" style="left: 116.673px; top: 111.016px; font-size: 22.2465px; font-family: sans-serif; transform: scaleX(0.966116);">Recognizing Textual Parallelisms with edit distance and si</div><div data-canvas-width="144.76892563338328" style="left: 665.051px; top: 111.016px; font-size: 22.2465px; font-family: sans-serif; transform: scaleX(0.951801);">milarity degree </div><div data-canvas-width="77.78056592529863" style="left: 311.502px; top: 193.117px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(1.02097);">Marie Gu</div><div data-canvas-width="6.173409574585318" style="left: 390.401px; top: 192.931px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(1.19872);"> ́</div><div data-canvas-width="225.52819383034222" style="left: 389.284px; top: 193.117px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(0.924043);">egan and Nicolas Hernandez </div><div data-canvas-width="104.76330790485571" style="left: 410.684px; top: 215.166px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(0.933442);">LIMSI-CNRS </div><div data-canvas-width="234.64282138535273" style="left: 345.927px; top: 236.751px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(0.859918);">Universit ́e de Paris-Sud, France </div><div data-canvas-width="445.65989536977975" style="left: 240.791px; top: 258.726px; font-size: 18.5388px; font-family: monospace; transform: scaleX(0.977789);">guegan@aist.enst.fr | hernandez@limsi.fr </div><div data-canvas-width="68.8494158283731" style="left: 246.373px; top: 387.015px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(0.941638);">Abstract </div><div data-canvas-width="285.2558721562994" style="left: 138.072px; top: 417.623px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.911798);">Detection of discourse structure is crucial </div><div data-canvas-width="285.44372246512245" style="left: 138.072px; top: 438.65px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.929028);">in many text-based applications. This pa-</div><div data-canvas-width="285.4410784612719" style="left: 138.072px; top: 459.678px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.909482);">per presents an original framework for de-</div><div data-canvas-width="285.44399874705135" style="left: 138.072px; top: 480.705px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.943617);">scribing textual parallelism which allows </div><div data-canvas-width="285.44204416236175" style="left: 138.072px; top: 501.732px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.970616);">us to generalize various discourse phe-</div><div data-canvas-width="285.2573702228256" style="left: 138.072px; top: 522.573px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.908656);">nomena and to propose a unique method </div><div data-canvas-width="285.6283398220112" style="left: 138.072px; top: 543.601px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.910079);">to recognize them. With this prospect, we </div><div data-canvas-width="285.25525946407464" style="left: 138.072px; top: 564.629px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.925603);">discuss several methods in order to iden-</div><div data-canvas-width="285.25501060733933" style="left: 138.072px; top: 585.657px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.917022);">tify the most appropriate one for the prob-</div><div data-canvas-width="285.4412790041946" style="left: 138.072px; top: 606.685px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.901204);">lem, and evaluate them based on a manu-</div><div data-canvas-width="148.49056384649958" style="left: 138.072px; top: 627.713px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.873046);">ally annotated corpus. </div><div data-canvas-width="128.02306922969578" style="left: 111.649px; top: 655.719px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(1.04466);">1  Introduction </div><div data-canvas-width="338.2874610102038" style="left: 111.649px; top: 688.374px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.89791);">Detection of discourse structure is crucial in many </div><div data-canvas-width="338.4750049120144" style="left: 111.649px; top: 709.402px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.947932);">text-based applications such as Information Re-</div><div data-canvas-width="338.2904891494651" style="left: 111.649px; top: 730.429px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.932743);">trieval, Question-Answering, Text Browsing, etc. </div><div data-canvas-width="337.91604790510416" style="left: 111.649px; top: 751.456px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.896884);">Thanks to a discourse structure one can precisely </div><div data-canvas-width="338.1006165895485" style="left: 111.649px; top: 772.482px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.897255);">point out an information, provide it a local context, </div><div data-canvas-width="231.66518798535427" style="left: 111.649px; top: 793.509px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.921195);">situate it globally, link it to others. </div><div data-canvas-width="321.35302599406486" style="left: 128.583px; top: 814.536px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.955271);">The context of our research is to improve au-</div><div data-canvas-width="338.28818834961766" style="left: 111.649px; top: 835.377px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.944939);">tomatic discourse analysis. A key feature of the </div><div data-canvas-width="338.2895318728427" style="left: 111.649px; top: 856.404px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.904517);">most popular discourse theories (RST (Mann and </div><div data-canvas-width="338.29191141608504" style="left: 111.649px; top: 877.43px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.94561);">Thompson, 1987), SDRT (Asher, 1993), etc.) is </div><div data-canvas-width="338.28766907763054" style="left: 111.649px; top: 898.457px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.925505);">the distinction between two sorts of discourse re-</div><div data-canvas-width="337.5462446108307" style="left: 111.649px; top: 919.483px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.940415);">lations or rhetorical functions: the subordinating </div><div data-canvas-width="338.4748633200634" style="left: 111.649px; top: 940.51px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.957948);">and the coordinating relations (some parts of a </div><div data-canvas-width="338.1011033139949" style="left: 111.649px; top: 961.536px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.899524);">text play a subordinate role relative to other parts, </div><div data-canvas-width="289.16401400090535" style="left: 111.649px; top: 982.563px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.884249);">while some others have equal importance). </div><div data-canvas-width="321.3539802121658" style="left: 128.583px; top: 1003.59px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.955179);">In this paper, we focus our attention on a dis-</div><div data-canvas-width="337.5456609880929" style="left: 111.649px; top: 1024.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.880401);">course feature we assume supporting coordination </div><div data-canvas-width="144.7697604414343" style="left: 111.649px; top: 1045.64px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.900963);">relations, namely the </div><div data-canvas-width="131.55821111508845" style="left: 262.56px; top: 1045.73px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.933589);">Textual Parallelism</div><div data-canvas-width="55.82346193917801" style="left: 394.12px; top: 1045.64px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.899895);">. Based </div><div data-canvas-width="338.104027104894" style="left: 111.65px; top: 1066.48px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.911004);">on psycholinguistics studies (Dubey et al., 2005), </div><div data-canvas-width="338.1021126125488" style="left: 111.65px; top: 1087.51px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.913378);">our intuition is that similarities concerning the sur-</div><div data-canvas-width="338.0999854108618" style="left: 111.65px; top: 1108.54px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.90168);">face, the content and the structure of textual units </div><div data-canvas-width="337.9137882870304" style="left: 111.65px; top: 1129.56px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.91041);">can be a way for authors to explicit their intention </div><div data-canvas-width="338.4726173909031" style="left: 111.65px; top: 1150.59px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.88943);">to consider these units with the same rhetorical im-</div><div data-canvas-width="61.96457434713584" style="left: 111.65px; top: 1171.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.82418);">portance. </div><div data-canvas-width="321.16796634249044" style="left: 493.491px; top: 388.582px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.876431);">Parallelism can be encountered in many specific </div><div data-canvas-width="337.91617641713924" style="left: 476.557px; top: 409.611px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.96172);">discourse structures such as continuity in infor-</div><div data-canvas-width="338.28967788341004" style="left: 476.557px; top: 430.637px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.951499);">mation structure (Kruijff-Korbayov ́a and Kruijff, </div><div data-canvas-width="338.2901828913189" style="left: 476.557px; top: 451.664px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.927839);">1996), frame structures (Charolles, 1997), VP el-</div><div data-canvas-width="338.28918403369124" style="left: 476.557px; top: 472.69px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.915987);">lipses (Hobbs and Kehler, 1997), headings (Sum-</div><div data-canvas-width="338.2900420707651" style="left: 476.557px; top: 493.717px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.902187);">mers, 1998), enumerations (Luc et al., 1999), etc. </div><div data-canvas-width="338.10337017914054" style="left: 476.557px; top: 514.743px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.888382);">These phenomena are usually treated mostly inde-</div><div data-canvas-width="337.9194477156247" style="left: 476.557px; top: 535.77px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.941498);">pendently within individual systems with ad-hoc </div><div data-canvas-width="158.3520241292886" style="left: 476.557px; top: 556.611px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.855417);">resource developments. </div><div data-canvas-width="321.16793072289533" style="left: 493.491px; top: 577.638px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.949265);">In this work, we argue that, depending on de-</div><div data-canvas-width="337.91794577181366" style="left: 476.557px; top: 598.666px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.931673);">scription granularity we can proceed, computing </div><div data-canvas-width="337.9180357478316" style="left: 476.557px; top: 619.693px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.944125);">syntagmatic (succession axis of linguistic units) </div><div data-canvas-width="337.7327775359601" style="left: 476.557px; top: 640.72px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.953554);">and paradigmatic (substitution axis) similarities </div><div data-canvas-width="337.916038743073" style="left: 476.557px; top: 661.747px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.922092);">between units can allow us to generically handle </div><div data-canvas-width="338.29035197613024" style="left: 476.557px; top: 682.775px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.913722);">such discourse structural phenomena.  Section 2 </div><div data-canvas-width="337.73365943220824" style="left: 476.557px; top: 703.802px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.885278);">introduces the discourse parallelism phenomenon. </div><div data-canvas-width="337.9162258880475" style="left: 476.557px; top: 724.829px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.870619);">Section 3 develops three methods we implemented </div><div data-canvas-width="337.914544607965" style="left: 476.557px; top: 745.857px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.926851);">to detect it: a similarity degree measure, a string </div><div data-canvas-width="338.28742242682006" style="left: 476.557px; top: 766.884px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.883795);">editing distance (Wagner and Fischer, 1974) and a </div><div data-canvas-width="138.6277254494196" style="left: 476.557px; top: 787.725px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.916345);">tree editing distance</div><div data-canvas-width="6.179571072406326" style="left: 615.188px; top: 784.731px; font-size: 12.3591px; font-family: sans-serif; transform: scaleX(0.617957);">1 </div><div data-canvas-width="186.2646224366987" style="left: 628.4px; top: 787.736px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.884727);">(Zhang and Shasha, 1989). </div><div data-canvas-width="337.91544112692304" style="left: 476.558px; top: 808.763px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.89011);">Section 4 discusses and evaluates these methods </div><div data-canvas-width="338.2858102273698" style="left: 476.558px; top: 829.792px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.930336);">and their relevance. The final section reviews re-</div><div data-canvas-width="75.73355434960894" style="left: 476.558px; top: 850.82px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.876039);">lated work. </div><div data-canvas-width="180.12494258176528" style="left: 476.557px; top: 885.154px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(1.01118);">2  Textual parallelism </div><div data-canvas-width="93.78338859825082" style="left: 476.557px; top: 918.181px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.915555);">Our notion of </div><div data-canvas-width="76.29247694138611" style="left: 575.55px; top: 918.266px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.892484);">parallelism </div><div data-canvas-width="156.67638659944237" style="left: 657.611px; top: 918.181px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.89666);">is based on similarities </div><div data-canvas-width="337.7324575077009" style="left: 476.556px; top: 939.208px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.912174);">between syntagmatic and paradigmatic represen-</div><div data-canvas-width="338.10310881765383" style="left: 476.556px; top: 960.236px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.954419);">tations of (constituents of) textual units.  These </div><div data-canvas-width="338.10476991961434" style="left: 476.556px; top: 981.264px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.906528);">similarities concern various dimensions from shal-</div><div data-canvas-width="337.73202312321814" style="left: 476.556px; top: 1002.29px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.969612);">low to deeper description:  layout, typography, </div><div data-canvas-width="338.291328991043" style="left: 476.556px; top: 1023.32px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.909956);">morphology, lexicon, syntax, and semantics. This </div><div data-canvas-width="337.91759288474833" style="left: 476.556px; top: 1044.35px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.929239);">account is not limited to the semantic dimension </div><div data-canvas-width="338.10295970796517" style="left: 476.556px; top: 1065.38px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.910797);">as defined by (Hobbs and Kehler, 1997) who con-</div><div data-canvas-width="337.91313864218193" style="left: 476.556px; top: 1086.4px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.924481);">sider text fragments as parallel if the same predi-</div><div data-canvas-width="337.5427044534205" style="left: 476.556px; top: 1107.25px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.91865);">cate can be inferred from them with coreferential </div><div data-canvas-width="198.72980040842117" style="left: 476.556px; top: 1128.27px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.892432);">or similar pairs of arguments. </div><div style="left: 496.096px; top: 1155.49px; font-size: 9.26935px; font-family: sans-serif;">1</div><div data-canvas-width="313.35464231085274" style="left: 501.492px; top: 1158.26px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.900444);">For all measures, elementary units considered are syn-</div><div data-canvas-width="154.25644886718524" style="left: 476.557px; top: 1173.7px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.85698);">tactic tags and word tokens. </div><div data-canvas-width="25.865451163845297" style="left: 460.027px; top: 1232.66px; font-size: 15.5069px; font-family: sans-serif; transform: scaleX(1.0006);">281</div></div></div><div data-loaded="true" data-page-number="2" style="width: 923px; height: 1305px;" class="page" id="pageContainer2"><div class="canvasWrapper" style="width: 923px; height: 1305px;"><canvas style="width: 923px; height: 1305px;" height="1305" width="923" id="page2"></canvas></div><div style="width: 923px; height: 1305px;" class="textLayer"><div data-canvas-width="321.355685189023" style="left: 128.582px; top: 102.958px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.893855);">We observe parallelism at various structural lev-</div><div data-canvas-width="337.9161198547919" style="left: 111.649px; top: 123.986px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.90127);">els of text: among heading structures, VP ellipses </div><div data-canvas-width="338.47511013327323" style="left: 111.649px; top: 145.013px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.955335);">and others, enumerations of noun phrases in a </div><div data-canvas-width="338.104972945894" style="left: 111.649px; top: 165.854px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.929711);">sentence, enumerations with or without markers </div><div data-canvas-width="338.65824621167087" style="left: 111.649px; top: 186.882px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.912375);">such as frame introducers (e.g. “In France, . . . In </div><div data-canvas-width="338.10105970976394" style="left: 111.649px; top: 207.909px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.935402);">Italy, . . . ”) or typographical and layout markers. </div><div data-canvas-width="338.29094940281425" style="left: 111.649px; top: 228.936px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.920812);">The underlying assumption is that parallelism be-</div><div data-canvas-width="337.9172958562997" style="left: 111.649px; top: 249.964px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.899035);">tween some textual units accounts for a rhetorical </div><div data-canvas-width="338.28868794421436" style="left: 111.649px; top: 270.991px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.884492);">coordination relation. It means that these units can </div><div data-canvas-width="225.1524161395183" style="left: 111.649px; top: 292.018px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.877616);">be regarded as equally important. </div><div data-canvas-width="321.3554321978702" style="left: 128.582px; top: 313.045px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.93959);">By describing textual units in a two-tier frame-</div><div data-canvas-width="141.04640925414563" style="left: 111.649px; top: 334.073px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.904144);">work composed of a </div><div data-canvas-width="90.24889625370866" style="left: 258.093px; top: 334.157px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.889298);">paradigmatic </div><div data-canvas-width="61.776525721615094" style="left: 354.482px; top: 334.073px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.853857);">level and </div><div data-canvas-width="27.911835470200568" style="left: 421.841px; top: 334.157px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.874066);">syn-</div><div data-canvas-width="58.61498392377942" style="left: 111.649px; top: 355.184px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.854446);">tagmatic </div><div data-canvas-width="272.60283708881377" style="left: 177.335px; top: 355.099px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.935654);">level, we argue that, depending on the </div><div data-canvas-width="338.2902860216859" style="left: 111.649px; top: 376.127px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.913845);">description granularity we consider (potentially at </div><div data-canvas-width="338.28791397588134" style="left: 111.649px; top: 396.968px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.947364);">the character level for item numbering), we can </div><div data-canvas-width="323.5887915656153" style="left: 111.649px; top: 417.996px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.894427);">detect a wide variety of parallelism phenomena. </div><div data-canvas-width="321.3573747311735" style="left: 128.583px; top: 439.023px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.909459);">Among parallelism properties, we note that the </div><div data-canvas-width="338.2874697730033" style="left: 111.649px; top: 460.051px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.949934);">parallelism of a given number of textual units is </div><div data-canvas-width="338.4750458840224" style="left: 111.649px; top: 481.079px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.90578);">based on the parallelism of their constituents. We </div><div data-canvas-width="338.1020137113323" style="left: 111.649px; top: 502.107px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.975154);">also note that certain semantic classes of con-</div><div data-canvas-width="338.1016486713806" style="left: 111.649px; top: 523.135px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.900204);">stituents, such as item numbering, are more effec-</div><div data-canvas-width="264.97563205666336" style="left: 111.649px; top: 544.163px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.903891);">tive in marking parallelism than others. </div><div data-canvas-width="227.01603393151694" style="left: 111.649px; top: 578.35px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.982045);">2.1  An example of parallelism </div><div data-canvas-width="338.10322219948074" style="left: 111.649px; top: 605.941px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.93705);">The following example is extracted from our cor-</div><div data-canvas-width="338.1000928786452" style="left: 111.649px; top: 626.969px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.875416);">pus (see section 4.1). In this case, we have an enu-</div><div data-canvas-width="233.34405235685819" style="left: 111.649px; top: 647.998px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.913046);">meration without explicit markers. </div><div data-canvas-width="270.7429021965445" style="left: 145.515px; top: 679.471px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.911592);">For the purposes of chaining, each type of link </div><div data-canvas-width="270.55562484081514" style="left: 145.515px; top: 694.916px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.864395);">between WordNet synsets is assigned a direction </div><div data-canvas-width="148.11700818531952" style="left: 145.515px; top: 710.361px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.886928);">of up, down, or horizontal. </div><div data-canvas-width="270.74237619242257" style="left: 145.515px; top: 737.343px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.9272);">Upward links correspond to generalization: for </div><div data-canvas-width="270.7411103815994" style="left: 145.515px; top: 752.788px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.911586);">example, an upward link from apple to fruit indi-</div><div data-canvas-width="233.15195422383883" style="left: 145.515px; top: 768.234px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.860339);">cates that fruit is more general than apple. </div><div data-canvas-width="270.5568727765913" style="left: 145.515px; top: 795.402px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.949322);">Downward links correspond to specialization: </div><div data-canvas-width="270.73947475919243" style="left: 145.515px; top: 810.847px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.879024);">for example, a link from fruit to apple would have </div><div data-canvas-width="124.11273978895193" style="left: 145.515px; top: 826.292px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.880232);">a downward direction. </div><div data-canvas-width="270.556988864287" style="left: 145.515px; top: 858.856px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.88999);">Horizontal links are very specific specializations. </div><div data-canvas-width="338.2883525962809" style="left: 111.649px; top: 891.767px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.906858);">The parallelism pattern of the first two items is de-</div><div data-canvas-width="126.15964525884756" style="left: 111.649px; top: 912.608px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.883471);">scribed as follows: </div><div data-canvas-width="62.89258864078562" style="left: 145.515px; top: 949.664px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.938695);">[JJ + suff =</div><div data-canvas-width="27.91237108173321" style="left: 208.409px; top: 949.734px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.930412);">ward</div><div data-canvas-width="4.6300468533667605" style="left: 236.693px; top: 949.664px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.578756);">] </div><div data-canvas-width="106.80898017525882" style="left: 245.065px; top: 949.734px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.861363);">links correspond to </div><div data-canvas-width="60.846665766617335" style="left: 355.41px; top: 949.664px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.936103);">[NN + suff </div><div data-canvas-width="7.841881157053614" style="left: 145.515px; top: 970.692px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.65349);">= </div><div data-canvas-width="48.56740324837796" style="left: 156.865px; top: 970.761px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.952302);">alization</div><div data-canvas-width="4.6300468533667605" style="left: 205.433px; top: 970.692px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.578756);">] </div><div data-canvas-width="81.68614615126043" style="left: 213.619px; top: 970.761px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.878346);">: for example , </div><div data-canvas-width="10.038720204597" style="left: 302.191px; top: 970.692px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.83656);">X </div><div data-canvas-width="49.86871858914283" style="left: 315.774px; top: 970.761px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.940919);">link from</div><div data-canvas-width="10.038720204597" style="left: 369.178px; top: 970.692px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.772209);">Y </div><div data-canvas-width="10.79281439634702" style="left: 382.575px; top: 970.761px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.899401);">to</div><div data-canvas-width="8.495371253474747" style="left: 396.903px; top: 970.692px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.707948);">Z </div><div data-canvas-width="3.4760111511762473" style="left: 408.998px; top: 970.761px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.434501);">. </div><div data-canvas-width="338.10257905737404" style="left: 111.649px; top: 1003.6px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(1.03401);">This pattern indicates that several item con-</div><div data-canvas-width="338.2876232201084" style="left: 111.649px; top: 1024.63px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.888905);">stituents can be concerned by parallelism and that </div><div data-canvas-width="337.7311706077229" style="left: 111.649px; top: 1045.66px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.945893);">similarities can be observed at the typographic, </div><div data-canvas-width="338.10187455537175" style="left: 111.649px; top: 1066.5px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.947108);">lexical and syntactic description levels.  Tokens </div><div data-canvas-width="337.918564648748" style="left: 111.649px; top: 1087.53px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.979947);">(words or punctuation marks) having identical </div><div data-canvas-width="338.4749943222223" style="left: 111.649px; top: 1108.55px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.973702);">shallow descriptions are written in italics.  The </div><div data-canvas-width="338.0998966731391" style="left: 111.649px; top: 1129.58px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.92251);">X, Y and Z variables stand for matching any non-</div><div data-canvas-width="338.287283094927" style="left: 111.649px; top: 1150.61px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.888943);">parallel text areas between contiguous parallel tex-</div><div data-canvas-width="338.28836483713343" style="left: 111.649px; top: 1171.64px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.986263);">tual units.  Some words are parallel based on </div><div data-canvas-width="338.2852876870956" style="left: 476.556px; top: 102.967px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.94016);">their syntactic category (“JJ” / adjectives, “NN” / </div><div data-canvas-width="324.14658178041543" style="left: 476.556px; top: 123.995px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.924065);">nouns) or suffix specifications (“suff” attribute). </div><div data-canvas-width="338.1029827145426" style="left: 476.556px; top: 145.023px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.934632);">The third item is similar to the first two items but </div><div data-canvas-width="152.21282746550432" style="left: 476.556px; top: 165.864px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.894931);">with a simpler pattern: </div><div data-canvas-width="10.792632642603243" style="left: 510.236px; top: 191.569px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.67454);">JJ </div><div data-canvas-width="26.23734585906372" style="left: 524.564px; top: 191.639px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.937048);">links</div><div data-canvas-width="85.59333279886977" style="left: 554.336px; top: 191.569px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.995271);">U [NN + suff =</div><div data-canvas-width="48.56716508590265" style="left: 639.931px; top: 191.639px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.952297);">alization</div><div data-canvas-width="21.398115040303907" style="left: 688.498px; top: 191.569px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.855925);">] W </div><div data-canvas-width="3.4760111511762473" style="left: 713.246px; top: 191.639px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.434501);">. </div><div data-canvas-width="338.2876183819605" style="left: 476.555px; top: 213.129px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.909253);">Parallelism is distinguished by these types of sim-</div><div data-canvas-width="184.03095178319387" style="left: 476.555px; top: 234.156px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.86664);">ilarities between sentences. </div><div data-canvas-width="96.57508128161537" style="left: 476.557px; top: 268.858px; font-size: 18.5388px; font-family: sans-serif; transform: scaleX(0.997676);">3  Methods </div><div data-canvas-width="338.2873688823945" style="left: 476.557px; top: 302.444px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.935874);">Three methods were used in this study. Given a </div><div data-canvas-width="338.2858047531578" style="left: 476.557px; top: 323.471px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.906851);">pair of sentences, they all produce a score of sim-</div><div data-canvas-width="337.9160869418527" style="left: 476.557px; top: 344.499px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.918167);">ilarity between these sentences. We first present </div><div data-canvas-width="317.074556738284" style="left: 476.557px; top: 365.526px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.880926);">the preprocessing to be performed on the texts. </div><div data-canvas-width="300.889768428471" style="left: 476.557px; top: 399.342px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.967388);">3.1  Prior processing applied on the texts </div><div data-canvas-width="337.7308244399316" style="left: 476.557px; top: 426.746px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.926347);">The texts were automatically cut into sentences. </div><div data-canvas-width="337.9156789337345" style="left: 476.557px; top: 447.775px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.912669);">The first two steps hereinafter have been applied </div><div data-canvas-width="337.9133050271037" style="left: 476.557px; top: 468.803px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.905772);">for all the methods. The last third was not applied </div><div data-canvas-width="337.9161752465104" style="left: 476.557px; top: 489.831px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.958899);">for the tree editing distance (see 3.3). Punctua-</div><div data-canvas-width="337.7291400133612" style="left: 476.557px; top: 510.859px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.880956);">tion marks and syntactic labels were henceforward </div><div data-canvas-width="141.04670920578286" style="left: 476.557px; top: 531.887px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.857774);">considered as words. </div><div data-canvas-width="12.653653815853804" style="left: 476.557px; top: 557.008px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">1. </div><div data-canvas-width="140.48991313902877" style="left: 500.747px; top: 557.093px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.906094);">Text homogenization</div><div data-canvas-width="173.23981684339873" style="left: 641.237px; top: 557.008px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.935757);">: lemmatization together </div><div data-canvas-width="337.9187123915752" style="left: 476.557px; top: 578.036px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.936582);">with a semantic standardization.  Lexical chains </div><div data-canvas-width="338.2875976016078" style="left: 476.557px; top: 599.063px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.912154);">are built using WordNet relations, then words are </div><div data-canvas-width="319.4944701295436" style="left: 476.557px; top: 620.091px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.887772);">replaced by their most representative synonym: </div><div data-canvas-width="245.24983387771906" style="left: 510.237px; top: 648.959px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.898351);">Horizontal links are specific specializations. </div><div data-canvas-width="270.92913306949936" style="left: 510.237px; top: 664.474px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.888292);">horizontal connection be specific specialization . </div><div data-canvas-width="12.653653815853804" style="left: 476.557px; top: 694.71px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">2. </div><div data-canvas-width="120.3931676008674" style="left: 494.234px; top: 694.794px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.86593);">Syntactic analysis </div><div data-canvas-width="195.75391706247186" style="left: 618.721px; top: 694.71px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.880254);">by (Charniak, 1997)’s parser: </div><div data-canvas-width="270.9187551531947" style="left: 510.237px; top: 723.578px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.930992);">( S1 ( S ( NP ( JJ Horizontal ) (NNS links ) ( VP </div><div data-canvas-width="270.92412265325527" style="left: 510.237px; top: 739.023px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.996045);">( AUX are) ( NP ( ADJP ( JJ specific ) ( NNS </div><div data-canvas-width="176.02752717248867" style="left: 510.237px; top: 754.468px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.8981);">specializations ) ( SENT .))))))) </div><div data-canvas-width="12.653653815853804" style="left: 476.557px; top: 784.774px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">3. </div><div data-canvas-width="194.26707179163031" style="left: 494.42px; top: 784.859px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.914844);">Syntactic structure flattening</div><div data-canvas-width="4.702813221525079" style="left: 688.689px; top: 784.774px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.500299);">: </div><div data-canvas-width="270.73987581873865" style="left: 510.237px; top: 813.643px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.973884);">S1 S NP JJ Horizontal NNS links VP AUX are </div><div data-canvas-width="270.9270770275467" style="left: 510.237px; top: 829.274px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.918397);">NP ADJP JJ specific NNS specializations SENT. </div><div data-canvas-width="324.1483199138107" style="left: 476.556px; top: 859.157px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.98098);">3.2  Wagner &amp; Fischer’s string edit distance </div><div data-canvas-width="337.91808722166525" style="left: 476.556px; top: 886.561px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.991592);">This method is based on Wagner &amp; Fischer’s </div><div data-canvas-width="338.29008692682424" style="left: 476.556px; top: 907.589px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.967004);">string edit distance algorithm (Wagner and Fis-</div><div data-canvas-width="337.9157006952501" style="left: 476.556px; top: 928.616px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.87073);">cher, 1974), applied to sentences viewed as strings </div><div data-canvas-width="158.35070667792914" style="left: 476.556px; top: 949.643px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.905896);">of words. It computes a</div><div data-canvas-width="147.0011361414689" style="left: 638.629px; top: 949.728px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.873966);">sentence edit distance</div><div data-canvas-width="29.02776084283045" style="left: 785.632px; top: 949.643px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.88275);">, us-</div><div data-canvas-width="322.2857730035609" style="left: 476.556px; top: 970.671px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.886212);">ing edit operations on these elementary entities. </div><div data-canvas-width="320.98257252714507" style="left: 493.489px; top: 991.699px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.920688);">The idea is to use edit operations to transform </div><div data-canvas-width="57.68437247953812" style="left: 476.556px; top: 1012.73px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.84088);">sentence</div><div style="left: 538.148px; top: 1011.68px; font-size: 16.9166px; font-family: sans-serif;">S</div><div data-canvas-width="6.56270447889552" style="left: 548.569px; top: 1018.75px; font-size: 12.3591px; font-family: sans-serif; transform: scaleX(0.65627);">1 </div><div data-canvas-width="26.05155514766405" style="left: 559.362px; top: 1012.72px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.95602);">into</div><div style="left: 589.321px; top: 1011.67px; font-size: 16.9166px; font-family: sans-serif;">S</div><div style="left: 599.742px; top: 1018.75px; font-size: 12.3591px; font-family: sans-serif;">2</div><div data-canvas-width="207.84785012070935" style="left: 606.999px; top: 1012.72px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.916706);">. Similarly to (Wagner and Fis-</div><div data-canvas-width="328.2401551305541" style="left: 476.555px; top: 1033.75px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.884268);">cher, 1974), we considered three edit operations: </div><div data-canvas-width="12.653653815853804" style="left: 493.489px; top: 1054.78px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">1. </div><div data-canvas-width="63.63928679603485" style="left: 511.352px; top: 1054.86px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.927912);">replacing</div><div data-canvas-width="34.424889532309216" style="left: 579.83px; top: 1054.78px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.939288);">word</div><div style="left: 618.534px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">x</div><div style="left: 633.048px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">∈</div><div style="left: 648.864px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">S</div><div style="left: 659.288px; top: 1060.8px; font-size: 12.3591px; font-family: sans-serif;">1</div><div data-canvas-width="16.74742831114593" style="left: 670.825px; top: 1054.78px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.938231);">by</div><div style="left: 692.037px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">y</div><div style="left: 705.621px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">∈</div><div style="left: 721.623px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">S</div><div style="left: 732.047px; top: 1060.8px; font-size: 12.3591px; font-family: sans-serif;">2</div><div data-canvas-width="15.629799829251562" style="left: 739.304px; top: 1054.78px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(1.03968);">: (</div><div style="left: 754.933px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">x</div><div style="left: 769.26px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">→</div><div style="left: 790.845px; top: 1053.73px; font-size: 16.9166px; font-family: sans-serif;">y</div><div data-canvas-width="5.633225909236876" style="left: 799.776px; top: 1054.78px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.545151);">) </div><div data-canvas-width="12.653653815853804" style="left: 493.489px; top: 1075.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">2. </div><div data-canvas-width="53.963386557880355" style="left: 511.352px; top: 1075.7px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.911544);">deleting</div><div data-canvas-width="34.424889532309216" style="left: 570.154px; top: 1075.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.939288);">word</div><div style="left: 608.858px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">x</div><div style="left: 623.186px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">∈</div><div style="left: 639.188px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">S</div><div style="left: 649.612px; top: 1081.64px; font-size: 12.3591px; font-family: sans-serif;">1</div><div data-canvas-width="15.629799829251562" style="left: 656.869px; top: 1075.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(1.03968);">: (</div><div style="left: 672.498px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">x</div><div style="left: 686.826px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">→</div><div style="left: 708.597px; top: 1074.57px; font-size: 16.9166px; font-family: sans-serif;">λ</div><div data-canvas-width="5.633225909236876" style="left: 718.459px; top: 1075.62px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.545151);">) </div><div data-canvas-width="12.653653815853804" style="left: 493.488px; top: 1096.64px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.673067);">3. </div><div data-canvas-width="59.54583372969671" style="left: 511.352px; top: 1096.73px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.932103);">inserting</div><div data-canvas-width="34.424889532309216" style="left: 575.735px; top: 1096.64px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.939288);">word</div><div style="left: 614.626px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">y</div><div style="left: 628.208px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">∈</div><div style="left: 644.024px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">S</div><div data-canvas-width="6.56270447889552" style="left: 654.449px; top: 1102.67px; font-size: 12.3591px; font-family: sans-serif; transform: scaleX(0.65627);">2 </div><div data-canvas-width="26.051604713305245" style="left: 665.986px; top: 1096.65px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.956022);">into</div><div style="left: 696.688px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">S</div><div style="left: 707.11px; top: 1102.67px; font-size: 12.3591px; font-family: sans-serif;">1</div><div data-canvas-width="15.443818716882692" style="left: 714.367px; top: 1096.65px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(1.02731);">: (</div><div style="left: 729.811px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">λ</div><div style="left: 744.51px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">→</div><div style="left: 766.095px; top: 1095.6px; font-size: 16.9166px; font-family: sans-serif;">y</div><div data-canvas-width="5.633225909236876" style="left: 775.026px; top: 1096.65px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.545151);">) </div><div data-canvas-width="321.16718264372867" style="left: 493.488px; top: 1121.77px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.913791);">By definition, the cost of a sequence of edit op-</div><div data-canvas-width="208.0319982990503" style="left: 476.554px; top: 1142.79px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.892713);">erations is the sum of the costs</div><div data-canvas-width="6.179571072406326" style="left: 684.596px; top: 1139.79px; font-size: 12.3591px; font-family: sans-serif; transform: scaleX(0.617957);">2 </div><div data-canvas-width="118.15857693462902" style="left: 696.319px; top: 1142.79px; font-size: 16.9166px; font-family: sans-serif; transform: scaleX(0.873093);">of the elementary </div><div style="left: 496.096px; top: 1170.94px; font-size: 9.26935px; font-family: sans-serif;">2</div><div data-canvas-width="192.5889563135126" style="left: 501.492px; top: 1173.7px; font-size: 13.904px; font-family: sans-serif; transform: scaleX(0.863628);">We used unitary costs in this study </div><div data-canvas-width="25.865451163845297" style="left: 460.027px; top: 1232.66px; font-size: 15.5069px; font-family: sans-serif; transform: scaleX(1.0006);">282</div></div></div><div data-page-number="3" style="width: 923px; height: 1305px;" class="page" id="pageContainer3"><div class="loadingIcon"></div></div><div data-page-number="4" style="width: 923px; height: 1305px;" class="page" id="pageContainer4"><div class="loadingIcon"></div></div><div data-page-number="5" style="width: 923px; height: 1305px;" class="page" id="pageContainer5"><div class="loadingIcon"></div></div><div data-page-number="6" style="width: 923px; height: 1305px;" class="page" id="pageContainer6"><div class="loadingIcon"></div></div><div data-page-number="7" style="width: 923px; height: 1305px;" class="page" id="pageContainer7"><div class="loadingIcon"></div></div><div data-page-number="8" style="width: 923px; height: 1305px;" class="page" id="pageContainer8"><div class="loadingIcon"></div></div></div>
+        </div>
+
+        <div id="errorWrapper" hidden="true">
+          <div id="errorMessageLeft">
+            <span id="errorMessage"></span>
+            <button id="errorShowMore" data-l10n-id="error_more_info">
+              More Information
+            </button>
+            <button id="errorShowLess" data-l10n-id="error_less_info" hidden="true">
+              Less Information
+            </button>
+          </div>
+          <div id="errorMessageRight">
+            <button id="errorClose" data-l10n-id="error_close">
+              Close
+            </button>
+          </div>
+          <div class="clearBoth"></div>
+          <textarea id="errorMoreInfo" readonly="readonly" hidden="true"></textarea>
+        </div>
+      </div> <!-- mainContainer -->
+
+      <div id="overlayContainer" class="hidden">
+        <div id="passwordOverlay" class="container hidden">
+          <div class="dialog">
+            <div class="row">
+              <p id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</p>
+            </div>
+            <div class="row">
+              <input id="password" class="toolbarField" type="password">
+            </div>
+            <div class="buttonRow">
+              <button id="passwordCancel" class="overlayButton"><span data-l10n-id="password_cancel">Cancel</span></button>
+              <button id="passwordSubmit" class="overlayButton"><span data-l10n-id="password_ok">OK</span></button>
+            </div>
+          </div>
+        </div>
+        <div id="documentPropertiesOverlay" class="container hidden">
+          <div class="dialog">
+            <div class="row">
+              <span data-l10n-id="document_properties_file_name">File name:</span> <p id="fileNameField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_file_size">File size:</span> <p id="fileSizeField">-</p>
+            </div>
+            <div class="separator"></div>
+            <div class="row">
+              <span data-l10n-id="document_properties_title">Title:</span> <p id="titleField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_author">Author:</span> <p id="authorField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_subject">Subject:</span> <p id="subjectField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_keywords">Keywords:</span> <p id="keywordsField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_creation_date">Creation Date:</span> <p id="creationDateField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_modification_date">Modification Date:</span> <p id="modificationDateField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_creator">Creator:</span> <p id="creatorField">-</p>
+            </div>
+            <div class="separator"></div>
+            <div class="row">
+              <span data-l10n-id="document_properties_producer">PDF Producer:</span> <p id="producerField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_version">PDF Version:</span> <p id="versionField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_page_count">Page Count:</span> <p id="pageCountField">-</p>
+            </div>
+            <div class="buttonRow">
+              <button id="documentPropertiesClose" class="overlayButton"><span data-l10n-id="document_properties_close">Close</span></button>
+            </div>
+          </div>
+        </div>
+      </div>  <!-- overlayContainer -->
+
+    </div> <!-- outerContainer -->
+    <div id="printContainer"></div>
+<div id="mozPrintCallback-shim" hidden="">
+  <style>
+@media print {
+  #printContainer div {
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+}
+  </style>
+  <style scoped="">
+#mozPrintCallback-shim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999999;
+
+  display: block;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#mozPrintCallback-shim[hidden] {
+  display: none;
+}
+@media print {
+  #mozPrintCallback-shim {
+    display: none;
+  }
+}
+
+#mozPrintCallback-shim .mozPrintCallback-dialog-box {
+  display: inline-block;
+  margin: -50px auto 0;
+  position: relative;
+  top: 45%;
+  left: 0;
+  min-width: 220px;
+  max-width: 400px;
+
+  padding: 9px;
+
+  border: 1px solid hsla(0, 0%, 0%, .5);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+  background-color: #474747;
+
+  color: hsl(0, 0%, 85%);
+  font-size: 16px;
+  line-height: 20px;
+}
+#mozPrintCallback-shim .progress-row {
+  clear: both;
+  padding: 1em 0;
+}
+#mozPrintCallback-shim progress {
+  width: 100%;
+}
+#mozPrintCallback-shim .relative-progress {
+  clear: both;
+  float: right;
+}
+#mozPrintCallback-shim .progress-actions {
+  clear: both;
+}
+  </style>
+  <div class="mozPrintCallback-dialog-box">
+    <!-- TODO: Localise the following strings -->
+    Preparing document for printing...
+    <div class="progress-row">
+      <progress value="0" max="100"></progress>
+      <span class="relative-progress">0%</span>
+    </div>
+    <div class="progress-actions">
+      <input value="Cancel" class="mozPrintCallback-cancel" type="button">
+    </div>
+  </div>
+</div>
+
+  
+
+
+<input class="fileInput" id="fileInput" type="file"></body></html>

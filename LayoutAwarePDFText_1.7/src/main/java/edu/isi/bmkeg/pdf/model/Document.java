@@ -7,7 +7,6 @@ import java.util.List;
 import edu.isi.bmkeg.pdf.extraction.exceptions.InvalidPopularSpaceValueException;
 import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
-import edu.isi.bmkeg.pdf.model.RTree.RTPageBlock;
 import edu.isi.bmkeg.pdf.model.RTree.RTSpatialRepresentation;
 import edu.isi.bmkeg.pdf.model.RTree.RTWordBlock;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
@@ -15,18 +14,16 @@ import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import static java.lang.Math.abs;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
@@ -40,6 +37,41 @@ public class Document {
     private int x1, x2, y1, y2;
     private Boolean analyse;
 
+    public void automaticAnnotation(BufferedReader br) throws IOException {
+        ArrayList<ChunkBlock> aux = returnAllBlocks();
+        for (int i = 0; i < aux.size(); i++) {
+            String aux1 = br.readLine();
+            ((RTChunkBlock)aux.get(i)).setType_annote(aux1.substring(aux1.indexOf("#*#*#")+5));
+        }
+    }
+    
+    public ArrayList<ChunkBlock> returnAllBlocks() {
+        ArrayList<ChunkBlock> aux = new ArrayList<ChunkBlock>();
+        for (int i = 0; i < pageList.size(); i++) {
+            aux.addAll(pageList.get(i).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE));
+        }
+        return aux;
+    }
+
+    public float calculPrecis() {
+        int bons = 0;
+        int total = 0;
+        for (PageBlock page : pageList) {
+            for (ChunkBlock chunk : page.getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE)) {
+                total++;
+                if (chunk.getType().equals(((RTChunkBlock) chunk).getType_annote())) {
+                    bons++;
+                }
+            }
+        }
+        if (total > 0) {
+            bons = bons * 100;
+            return ((float) bons) / total;
+        } else {
+            return 0;
+        }
+    }
+
     public void setAnalyse(Boolean analyse) {
         this.analyse = analyse;
     }
@@ -48,21 +80,43 @@ public class Document {
         this.words = words;
     }
 
+    public void genArbre(JScrollPane pan) {
+        List<ChunkBlock> list = pageList.get(0).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
+        String arbre = "";
+        arbre = parcours((RTChunkBlock) list.get(0), "..........");
+        arbre = (((RTChunkBlock) list.get(0)).getchunkText().replaceAll("<[^<>]*>", "")) + arbre;
+        JLabel lab = new JLabel("<html>" + arbre + "</html>");
+        lab.setLocation(0, 0);
+        pan.add(lab);
+        pan.setViewportView(lab);
+    }
+
+    public String parcours(RTChunkBlock chunk, String offset) {
+        String arbre = "";
+        for (int i = 0; i < chunk.getSons().size(); i++) {
+            if (chunk.getSons().get(i).getType().equals("header") || chunk.getSons().get(i).getType().equals("title")) {
+                arbre = arbre + "<br>" + offset + (chunk.getSons().get(i).getchunkText().replaceAll("<[^<>]*>", ""));
+                arbre = arbre + parcours((RTChunkBlock) chunk.getSons().get(i), offset + "..........");
+            } else if (chunk.getSons().get(i).getType().equals("item")) {
+                arbre = arbre + "<br>" + offset + "item";
+                arbre = arbre + parcours((RTChunkBlock) chunk.getSons().get(i), offset + "..........");
+            } else {
+                arbre = arbre + "<br>" + offset + "paragraphe";
+                arbre = arbre + parcours((RTChunkBlock) chunk.getSons().get(i), offset + "..........");
+            }
+        }
+        return arbre;
+    }
+
     public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
         ChunkBlock chunk1, chunk2;
         for (int i = 1; i < pageList.size(); i++) {
             if (pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0 && pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0) {
                 chunk1 = pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(0);
-                //System.out.println(" 1 "+chunk1.getchunkText());
                 chunk2 = pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).get(pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() - 1);
-                //System.out.println(" 2 "+chunk2.getchunkText());
                 if (abs(chunk1.getX1() - chunk2.getX1()) < this.getMostPopularWordHeight() && abs(chunk1.getX2() - chunk2.getX2()) < this.getMostPopularWordHeight()) {
-                    //System.out.println("tota");
                     if (chunk1.getMostPopularWordFont().equals(chunk2.getMostPopularWordFont())) {
-                        //System.out.println("toti");
                         if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
-                            //System.out.println("totu");
-                            //System.out.println("continuité sur la page " + (i + 1));
                             ((RTChunkBlock) chunk2).setSuiv(true);
                             ((RTChunkBlock) chunk1).setPredec(true);
                         }
@@ -72,56 +126,63 @@ public class Document {
         }
     }
 
-    public void checkHierarchie(RTChunkBlock chunk1, RTChunkBlock chunk2, RTChunkBlock def) {
+    // retourne 0 i coordination, 1 si subordination, 2 si shift
+    public int checkHierarchie(RTChunkBlock chunk1, RTChunkBlock chunk2, RTChunkBlock def) {
         if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && !(chunk2.getType().equals("title") || chunk2.getType().equals("header")) && chunk1.getY2() <= chunk2.getY1()) {
-            System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-            chunk2.setFather(chunk1);
+            return 1;
         } else if (chunk2.getX1() > chunk1.getX1() && chunk1.getY2() <= chunk2.getY1()) {
-            System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", ""));
-            chunk2.setFather(chunk1);
-        } else if (chunk1.getFather() != null) {
-            if ((!(chunk1.getType().equals("title") || chunk1.getType().equals("header"))) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                checkHierarchie(((RTChunkBlock) chunk1.getFather()), chunk2, def);
-            } else if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                chunk2.setBrother(chunk1);
-                chunk2.setFather(chunk1.getFather());
-            } else if (abs(chunk2.getX1() - chunk1.getX1()) < 10) {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                chunk2.setBrother(chunk1);
-                chunk2.setFather(chunk1.getFather());
-            } else {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                checkHierarchie(((RTChunkBlock) chunk1.getFather()), chunk2, def);
-            }
-        } else {
-            chunk2.setBrother(chunk1);
-            if (chunk1.getFather() != null) {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                chunk2.setFather(chunk1.getFather());
-            } else {
-                System.out.println(chunk2.getchunkText().replaceAll("<[^<>]*>", "") + "   " + chunk2.getType());
-                chunk1.setFather(def);
-                chunk2.setFather(def);
-            }
+            return 1;
         }
+        if ((!(chunk1.getType().equals("title") || chunk1.getType().equals("header"))) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
+            return 2;
+        } else if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && (chunk2.getType().equals("title") || chunk2.getType().equals("header"))) {
+            if (chunk1.getMostPopularWordHeight() == chunk2.getMostPopularWordHeight()) {
+                return 0;
+            } else if (chunk1.getMostPopularWordHeight() > chunk2.getMostPopularWordHeight()) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else if (abs(chunk2.getX1() - chunk1.getX1()) < 10) {
+            return 0;
+        } else {
+            return 2;
+        }
+
     }
 
     public void hierarchie() {
         RTChunkBlock def = (RTChunkBlock) pageList.get(0).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).get(0);
         for (int i = 0; i < pageList.size(); i++) {
             List<ChunkBlock> chunks = pageList.get(i).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
-            for (int j = 0; j < chunks.size() - 1; j++) {
+            for (int j = 0; j < chunks.size(); j++) {
                 RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(j);
-                RTChunkBlock chunk2 = (RTChunkBlock) chunks.get(j + 1);
-                checkHierarchie(chunk1, chunk2, def);
-            }
-            if (i < pageList.size() - 1) {
-                RTChunkBlock chunk1 = (RTChunkBlock) chunks.get(chunks.size() - 1);
-                List<ChunkBlock> chunks2 = pageList.get(i + 1).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
-                RTChunkBlock chunk2 = (RTChunkBlock) chunks2.get(0);
-                checkHierarchie(chunk1, chunk2, def);
+                RTChunkBlock chunk2;
+                if (j < chunks.size() - 1) {
+                    chunk2 = (RTChunkBlock) chunks.get(j + 1);
+                } else if (i < pageList.size() - 1) {
+                    List<ChunkBlock> chunks2 = pageList.get(i + 1).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
+                    chunk2 = (RTChunkBlock) chunks2.get(0);
+                } else {
+                    break;
+                }
+                chunk2.setFather(def);
+                int aux = checkHierarchie(chunk1, chunk2, def);
+                while (aux == 2 && !chunk1.getchunkText().equals(def.getchunkText())) {
+                    chunk1 = (RTChunkBlock) chunk1.getFather();
+                    aux = checkHierarchie(chunk1, chunk2, def);
+                }
+                if (aux == 0) {
+                    chunk2.setBrother(chunk1);
+                    chunk1.setOtherbrother(chunk2);
+                    if (chunk1.getFather() != null) {
+                        chunk2.setFather(chunk1.getFather());
+                        ((RTChunkBlock) chunk1.getFather()).addSon(chunk2);
+                    }
+                } else if (aux == 1) {
+                    chunk2.setFather(chunk1);
+                    chunk1.addSon(chunk2);
+                }
             }
         }
     }
@@ -188,7 +249,7 @@ public class Document {
                     for (int j = 0; j < keys.length; j++) {
                         Integer key2 = (Integer) keys[j];
                         ChunkBlock value2 = chunks.get(key2);
-                        if (value2 != null && chunks.containsKey(key2) && key != key2 && !((RTChunkBlock) value2).getFrontiere()) {
+                        if (value2 != null && chunks.containsKey(key2) && key != key2) {
                             int ch2Y = value2.getY1();
                             //Jointure horizontale
                             if (chY == ch2Y && horiz) {
@@ -197,24 +258,19 @@ public class Document {
                                     SpatialEntity spatialEntity = value.union(value2);
                                     value.resize(spatialEntity.getX1(), spatialEntity.getY1(), spatialEntity.getWidth(), spatialEntity.getHeight());
                                     chunks.put(key, value);
-                                    //System.out.println("avant " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                                     pageList.get(i).delete(value2, key2);
                                     chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
-                                    //System.out.println("après " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                                 }
                                 //Jointure verticale
                             } else if ((value.getX1() < value2.getX2() || value.getX2() < value2.getX1()) && vert) {
                                 if (abs(value.getY2() - value2.getY1()) <= mostPopularWordHeight * multVert && value.getMostPopularWordFont() != null && value.getMostPopularWordStyle() != null) {
                                     if (value.getMostPopularWordHeight() == value2.getMostPopularWordHeight()) {
                                         if (value.getMostPopularWordFont().equals(value2.getMostPopularWordFont())) {
-                                            //System.out.println("bap");
                                             SpatialEntity spatialEntity = value.union(value2);
                                             value.resize(spatialEntity.getX1(), spatialEntity.getY1(), spatialEntity.getWidth(), spatialEntity.getHeight());
                                             chunks.put(key, value);
-                                            //System.out.println("avant " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                                             pageList.get(i).delete(value2, key2);
                                             chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
-                                            //System.out.println("après " + pageList.get(i).getAllChunkBlocks(SpatialOrdering.MIXED_MODE).size());
                                         }
                                     }
                                 }// Détection de la dernière ou première ligne d'un paragraphe
@@ -263,10 +319,10 @@ public class Document {
                 classifier.classify(chunkList);
             }
         }
-         
+
     }
 
-    public void affichage(int i, JPanel panel,boolean rule ) {
+    public void affichage(int i, JPanel panel, boolean rule) {
         //System.out.println(pageList.size());
         panel.removeAll();
         panel.repaint();

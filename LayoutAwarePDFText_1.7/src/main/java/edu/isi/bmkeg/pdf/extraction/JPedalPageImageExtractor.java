@@ -11,13 +11,14 @@ import org.jpedal.grouping.PdfGroupingAlgorithms;
 
 import edu.isi.bmkeg.pdf.extraction.exceptions.AccessException;
 import edu.isi.bmkeg.pdf.extraction.exceptions.EncryptionException;
+import java.util.ArrayList;
 
 public class JPedalPageImageExtractor implements Iterator<BufferedImage>
 {
 	private PdfDecoder decoder = null;
 	int currentPage = 1;
 	int pageCount;
-	private List<BufferedImage> pageImages;
+	private ArrayList<BufferedImage> pageImages;
 
 	public JPedalPageImageExtractor()
 	{
@@ -30,6 +31,7 @@ public class JPedalPageImageExtractor implements Iterator<BufferedImage>
 		// if you do not require XML content, pure text extraction is much
 		// faster.
 		decoder.useXMLExtraction();
+                pageImages = new ArrayList<BufferedImage>();
 	}
 
 	public void init(String fileName) throws PdfException, AccessException,
@@ -47,8 +49,14 @@ public class JPedalPageImageExtractor implements Iterator<BufferedImage>
 		} else if (decoder.isEncrypted()) {
 			throw new EncryptionException(fileName);
 		}
-
+                for (int i = 0; i<pageCount;i++) {
+                    pageImages.add(decoder.getPageAsImage(i+1));
+                }
 	}
+
+    public BufferedImage getPageImages(int i) {
+        return pageImages.get(i);
+    }
 
     public void close(){
     	if (decoder.isOpen()) {

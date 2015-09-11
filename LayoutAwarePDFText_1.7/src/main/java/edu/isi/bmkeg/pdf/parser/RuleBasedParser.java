@@ -1,4 +1,3 @@
-
 package edu.isi.bmkeg.pdf.parser;
 
 import java.io.File;
@@ -53,14 +52,10 @@ public class RuleBasedParser implements Parser {
     private float multiplicateur;
     private float multiplicateur2;
     private boolean analyse;
-    private boolean changementStyle;
+    private boolean modestrict;
 
     public void setChangementStyle(boolean changementStyle) {
-        this.changementStyle = changementStyle;
-    }
-
-    public void affichagexy() {
-        System.out.println(eastWest + " " + northSouth);
+        this.modestrict = changementStyle;
     }
 
     public void setAnalyse(boolean analyse) {
@@ -87,7 +82,7 @@ public class RuleBasedParser implements Parser {
             pageList = new ArrayList<PageBlock>();
 
             extractor = new JPedalExtractor(modelFactory);
-            extractorimg= new JPedalPageImageExtractor();
+            extractorimg = new JPedalPageImageExtractor();
             idGenerator = 1;
             avgHeightFrequencyCounter = new IntegerFrequencyCounter(1);
             this.modelFactory = modelFactory;
@@ -110,7 +105,7 @@ public class RuleBasedParser implements Parser {
     private void init(String fileName) throws PdfException, AccessException,
             EncryptionException {
         extractor.init(fileName);
-        extractorimg.init(fileName);
+        //extractorimg.init(fileName);
         idGenerator = 1;
         avgHeightFrequencyCounter.reset();
         pageList.clear();
@@ -157,32 +152,34 @@ public class RuleBasedParser implements Parser {
             }
             if (!document.hasjPedalDecodeFailed()) {
                 String docID = new File(fileName).getName().split("\\.")[1];
-                for (PageBlock page : pageList) {
-                    /*PageImageOutlineRenderer.createPageImage(page, path, path
-                     + "beforeBuildBlocksOverlapDeletion_"+docID +"_"+ page.getPageNumber()
-                     + ".png", 0);*/
-                    this.deleteHighlyOverlappedChunkBlocks(page);
-                    /* PageImageOutlineRenderer.createPageImage(page, path, path
-                     + "afterBuildBlocksOverlapDeletion_"+docID +"_"+ page.getPageNumber()
-                     + ".png", 0);*/
-                    this.divideBlocksVertically(page);
-                    /* PageImageOutlineRenderer.createPageImage(page, path, path
-                     + "afterVerticalDivide_"+docID +"_"+ page.getPageNumber() + ".png", 0);
-                     */
-                    this.joinLines(page);
-                    /* PageImageOutlineRenderer.createPageImage(page, path, path
-                     + "afterJoinLines_" +docID+"_"+ page.getPageNumber() + ".png", 0);
-                     */
-                    this.divideBlocksHorizontally(page);
-                    /*		 PageImageOutlineRenderer.createPageImage(page, path, path
-                     + "afterHorizontalDivide_"+docID +"_"+ page.getPageNumber() + ".png",
-                     0);
-                     */
-                    this.deleteHighlyOverlappedChunkBlocks(page);
-                    /* PageImageOutlineRenderer
-                     .createPageImage(page, path, path + "/afterOverlapDeletion_"
-                     +docID	+"_"		 + page.getPageNumber() + ".png", 0);*/
+                if (!modestrict) {
+                    for (PageBlock page : pageList) {
+                        /*PageImageOutlineRenderer.createPageImage(page, path, path
+                         + "beforeBuildBlocksOverlapDeletion_"+docID +"_"+ page.getPageNumber()
+                         + ".png", 0);*/
+                        this.deleteHighlyOverlappedChunkBlocks(page);
+                        /* PageImageOutlineRenderer.createPageImage(page, path, path
+                         + "afterBuildBlocksOverlapDeletion_"+docID +"_"+ page.getPageNumber()
+                         + ".png", 0);*/
+                        this.divideBlocksVertically(page);
+                        /* PageImageOutlineRenderer.createPageImage(page, path, path
+                         + "afterVerticalDivide_"+docID +"_"+ page.getPageNumber() + ".png", 0);
+                         */
+                        this.joinLines(page);
+                        /* PageImageOutlineRenderer.createPageImage(page, path, path
+                         + "afterJoinLines_" +docID+"_"+ page.getPageNumber() + ".png", 0);
+                         */
+                        this.divideBlocksHorizontally(page);
+                        /*		 PageImageOutlineRenderer.createPageImage(page, path, path
+                         + "afterHorizontalDivide_"+docID +"_"+ page.getPageNumber() + ".png",
+                         0);
+                         */
+                        this.deleteHighlyOverlappedChunkBlocks(page);
+                        /* PageImageOutlineRenderer
+                         .createPageImage(page, path, path + "/afterOverlapDeletion_"
+                         +docID	+"_"		 + page.getPageNumber() + ".png", 0);*/
 
+                    }
                 }
                 document.addPages(pageList);
             }
@@ -208,35 +205,36 @@ public class RuleBasedParser implements Parser {
         while (pageWordBlockList.size() > 0) {
             wordBlockList.clear();
             wordBlockList.add(pageWordBlockList.get(0));
+            if (!modestrict) {
+                counter = 0;
+                int extra;
+                seenList.clear();
 
-            counter = 0;
-            int extra;
-            seenList.clear();
+                while (wordBlockList.size() != 0) {
 
-            while (wordBlockList.size() != 0) {
+                    RTWordBlock wordBlock = (RTWordBlock) wordBlockList.peek();
 
-                RTWordBlock wordBlock = (RTWordBlock) wordBlockList.peek();
+                    pageBlock.getDocument().addToWordHeightFrequencyCounter(
+                            wordBlock.getHeight());
+                    pageWordBlockList.remove(wordBlock);
+                    tempList = this.getOverlappingNeighbors(pageBlock, wordBlock,
+                            pageWordBlockList);
+                    tempList.removeAll(wordBlockList);
+                    tempList.removeAll(seenList);
+                    wordBlockList.addAll(tempList);
 
-                pageBlock.getDocument().addToWordHeightFrequencyCounter(
-                        wordBlock.getHeight());
-                pageWordBlockList.remove(wordBlock);
-                tempList = this.getOverlappingNeighbors(pageBlock, wordBlock,
-                        pageWordBlockList);
-
-                if (wordBlock.getFrontiere()) {
-                    ((RTChunkBlock) chunkBlock).setFrontiere(true);
+                    seenList.add(wordBlockList.poll());
                 }
-                tempList.removeAll(wordBlockList);
-                tempList.removeAll(seenList);
-                wordBlockList.addAll(tempList);
 
-                seenList.add(wordBlockList.poll());
+                pageWordBlockList.removeAll(seenList);
+
+                chunkBlock = buildChunkBlock(seenList, pageBlock);
+            } else {
+                tempList = new ArrayList<WordBlock>();
+                tempList.add(pageWordBlockList.get(0));
+                chunkBlock = buildChunkBlock(tempList, pageBlock);
+                pageWordBlockList.removeAll(tempList);
             }
-
-            pageWordBlockList.removeAll(seenList);
-
-            chunkBlock = buildChunkBlock(seenList, pageBlock);
-
             chunkBlockList.add(chunkBlock);
 
         }
@@ -260,22 +258,7 @@ public class RuleBasedParser implements Parser {
                 new SpatialOrdering(SpatialOrdering.MIXED_MODE_ABSOLUTE));
         //System.out.println(wordBlock.getWord().replaceAll("<[^<>]*>", "")+" "+pageWordList.get(pageWordList.indexOf(wordBlock)+1).getWord().replaceAll("<[^<>]*>", ""));
         listOfInteresectingBlock.addAll(pageBlock.intersects(entity, null));
-        if (changementStyle) {
-            Object[] words = listOfInteresectingBlock.toArray();
-            for (int i = 0; i < words.length; i++) {
-                RTWordBlock word = (RTWordBlock) words[i];
-                //if ((word.getY1()+word.getHeight()/2)!=(wordBlock.getY1()+wordBlock.getHeight()/2)) {
-                if (!word.getFont().equals(wordBlock.getFont())) {
-                    word.setFrontiere(true);
-                } else if (!word.getFontStyle().equals(wordBlock.getFontStyle())) {
-                    word.setFrontiere(true);
-                } else if (word.getHeight() != wordBlock.getHeight()) {
-                    word.setFrontiere(true);
-                }
-                listOfInteresectingBlock.remove(word);
-                //}
-            }
-        }
+
         listOfInteresectingBlock.retainAll(pageWordList);
         return new ArrayList<WordBlock>(listOfInteresectingBlock);
     }

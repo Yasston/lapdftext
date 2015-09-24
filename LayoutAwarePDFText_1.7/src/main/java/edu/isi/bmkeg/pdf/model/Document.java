@@ -35,7 +35,6 @@ public class Document {
     private boolean jPedalDecodeFailed;
     private boolean words;
     private int x1, x2, y1, y2;
-    private Boolean analyse;
 
     public void automaticAnnotation(BufferedReader br) throws IOException {
         ArrayList<ChunkBlock> aux = returnAllBlocks();
@@ -72,9 +71,6 @@ public class Document {
         }
     }
 
-    public void setAnalyse(Boolean analyse) {
-        this.analyse = analyse;
-    }
 
     public void setWords(boolean words) {
         this.words = words;
@@ -233,7 +229,6 @@ public class Document {
         this.x2 = x2.getMostPopular();
         this.y1 = y1.getMin();
         this.y2 = y2.getMax();
-        this.analyse = true;
     }
 
     public int joinBlocks(Boolean vert, Boolean horiz, Boolean fin, float multVert, float multHoriz) {
@@ -333,11 +328,15 @@ public class Document {
             //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
 
             panel.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
+            int j=0;
+            for (int x=0;x<i;x++) {
+                j=j+pageList.get(x).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).size();
+            }
             for (final ChunkBlock chunk : chunkList) {
                 JLabel jlabel;
                 if (!words) {
                     if (rule) {
-                        jlabel = new JLabel(chunk.getType(), SwingConstants.CENTER);
+                        jlabel = new JLabel("#"+j+" : "+chunk.getType(), SwingConstants.CENTER);
                     } else {
                         jlabel = new JLabel();
                     }
@@ -401,6 +400,7 @@ public class Document {
                     lab.setLocation(0, 0);
                     panel.add(lab);
                 }
+                j++;
             }
 
             JLabel jlabel = new JLabel();
@@ -430,7 +430,6 @@ public class Document {
     public Document() {
         this.avgHeightFrequencyCounter = new IntegerFrequencyCounter(1);
         this.words = false;
-        this.analyse = false;
     }
 
     public int getTotalNumberOfPages() {

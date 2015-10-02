@@ -28,6 +28,7 @@ public class RTChunkBlock extends RTSpatialEntity implements ChunkBlock {
     private Boolean headerOrFooter = null;
     private Boolean predec;
     private Boolean suiv;
+    private Integer node;
 
     public ArrayList<ChunkBlock> getSons() {
         return sons;

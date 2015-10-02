@@ -15,10 +15,7 @@ import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import static java.lang.Math.abs;
 import java.util.HashMap;
 import javax.swing.JLabel;
@@ -36,14 +33,25 @@ public class Document {
     private boolean words;
     private int x1, x2, y1, y2;
 
+    /**
+     * Fonction chargeant une annotation prédéfinie à partir d'un lecteur
+     *
+     * @param br
+     * @throws IOException
+     */
     public void automaticAnnotation(BufferedReader br) throws IOException {
         ArrayList<ChunkBlock> aux = returnAllBlocks();
         for (int i = 0; i < aux.size(); i++) {
             String aux1 = br.readLine();
-            ((RTChunkBlock)aux.get(i)).setType_annote(aux1.substring(aux1.indexOf("#*#*#")+5));
+            ((RTChunkBlock) aux.get(i)).setType_annote(aux1.substring(aux1.indexOf("#*#*#") + 5));
         }
     }
-    
+
+    /**
+     * Fonction retournant une liste de tous les blocs
+     *
+     * @return
+     */
     public ArrayList<ChunkBlock> returnAllBlocks() {
         ArrayList<ChunkBlock> aux = new ArrayList<ChunkBlock>();
         for (int i = 0; i < pageList.size(); i++) {
@@ -52,6 +60,11 @@ public class Document {
         return aux;
     }
 
+    /**
+     * Calcul de la précision du programme
+     *
+     * @return
+     */
     public float calculPrecis() {
         int bons = 0;
         int total = 0;
@@ -71,11 +84,15 @@ public class Document {
         }
     }
 
-
     public void setWords(boolean words) {
         this.words = words;
     }
 
+    /**
+     * Génération du plan correspondant au fichier PDF
+     *
+     * @param pan
+     */
     public void genArbre(JScrollPane pan) {
         List<ChunkBlock> list = pageList.get(0).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
         String arbre = "";
@@ -87,6 +104,13 @@ public class Document {
         pan.setViewportView(lab);
     }
 
+    /**
+     * Fonction de parcours associée à la génération de l'arbre
+     *
+     * @param chunk
+     * @param offset
+     * @return
+     */
     public String parcours(RTChunkBlock chunk, String offset) {
         String arbre = "";
         for (int i = 0; i < chunk.getSons().size(); i++) {
@@ -104,7 +128,11 @@ public class Document {
         return arbre;
     }
 
-    public void verifSuite() { //Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
+    /**
+     * Fonction de vérification des blocs en chevauchement
+     */
+    public void verifSuite() {
+//Fonction vérifiant s'il existe des pages dont le premier bloc est la suite d'un bloc antérieur
         ChunkBlock chunk1, chunk2;
         for (int i = 1; i < pageList.size(); i++) {
             if (pageList.get(i).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0 && pageList.get(i - 1).getAllChunkBlocks(SpatialOrdering.COLUMN_AWARE_MIXED_MODE).size() > 0) {
@@ -122,7 +150,13 @@ public class Document {
         }
     }
 
-    // retourne 0 i coordination, 1 si subordination, 2 si shift
+    /**
+     * Fonction liée au parcours shift-reduce des blocs pour l'établissement des relations de coordination/subordination : retourne 0 i coordination, 1 si subordination, 2 si shift
+     * @param chunk1
+     * @param chunk2
+     * @param def
+     * @return 
+     */
     public int checkHierarchie(RTChunkBlock chunk1, RTChunkBlock chunk2, RTChunkBlock def) {
         if ((chunk1.getType().equals("title") || chunk1.getType().equals("header")) && !(chunk2.getType().equals("title") || chunk2.getType().equals("header")) && chunk1.getY2() <= chunk2.getY1()) {
             return 1;
@@ -147,6 +181,9 @@ public class Document {
 
     }
 
+    /**
+     * Fonction d'établissement de la hiérarchie : basée sur un alogrithme shift-reduce
+     */
     public void hierarchie() {
         RTChunkBlock def = (RTChunkBlock) pageList.get(0).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).get(0);
         for (int i = 0; i < pageList.size(); i++) {
@@ -183,6 +220,9 @@ public class Document {
         }
     }
 
+    /**
+     * Fonction de rognage
+     */
     public void rognerAction() {
         for (int i = 0; i < pageList.size(); i++) {
             HashMap<Integer, ChunkBlock> chunks = ((RTSpatialRepresentation) pageList.get(i)).getIndexToChunkBlockMap();
@@ -199,6 +239,9 @@ public class Document {
         }
     }
 
+    /**
+     * Fonction d'analyse pré-rognage
+     */
     public void rognerAnalyse() {
 
         IntegerFrequencyCounter x1, y1, x2, y2;
@@ -231,6 +274,15 @@ public class Document {
         this.y2 = y2.getMax();
     }
 
+    /**
+     * Fonction de fusion post-parsing : la fusion est horizontale, verticale, ou liée aux fins de paragraphes.
+     * @param vert
+     * @param horiz
+     * @param fin
+     * @param multVert
+     * @param multHoriz
+     * @return 
+     */
     public int joinBlocks(Boolean vert, Boolean horiz, Boolean fin, float multVert, float multHoriz) {
         int x = 0;
         for (int i = 0; i < pageList.size(); i++) {
@@ -306,6 +358,10 @@ public class Document {
         return x;
     }
 
+    /**
+     * Fonction de classification des blocs
+     * @param rules 
+     */
     public void classif(String rules) {
         for (int i = 0; i < pageList.size(); i++) {
             if (pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE) != null && pageList.get(i).getAllWordBlocks(SpatialOrdering.MIXED_MODE).size() > 0) {
@@ -317,6 +373,12 @@ public class Document {
 
     }
 
+    /**
+     * Fonction d'affichage : affiche la i-ème page sur le panel en question, et affiche les labels si rule est positif
+     * @param i
+     * @param panel
+     * @param rule 
+     */
     public void affichage(int i, JPanel panel, boolean rule) {
         //System.out.println(pageList.size());
         panel.removeAll();
@@ -328,15 +390,15 @@ public class Document {
             //System.out.println(pageList.get(i).getPageBoxWidth() + " " + pageList.get(i).getPageBoxHeight());
 
             panel.setSize(pageList.get(i).getPageBoxWidth(), pageList.get(i).getPageBoxHeight());
-            int j=0;
-            for (int x=0;x<i;x++) {
-                j=j+pageList.get(x).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).size();
+            int j = 0;
+            for (int x = 0; x < i; x++) {
+                j = j + pageList.get(x).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE).size();
             }
             for (final ChunkBlock chunk : chunkList) {
                 JLabel jlabel;
                 if (!words) {
                     if (rule) {
-                        jlabel = new JLabel("#"+j+" : "+chunk.getType(), SwingConstants.CENTER);
+                        jlabel = new JLabel("#" + j + " : " + chunk.getType(), SwingConstants.CENTER);
                     } else {
                         jlabel = new JLabel();
                     }
@@ -415,6 +477,9 @@ public class Document {
         }
     }
 
+    //------------------------Fin des modifications liées à LaToe 2.0-----------------------------------------------------
+    //------------------------Fonction originales de la librairie--------------------------------------------------------
+    
     public ArrayList<PageBlock> getPageList() {
         return pageList;
     }

@@ -90,9 +90,9 @@
                   <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="precis" min="-2" max="-2" attributes="0"/>
+                          <Component id="tolX" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="sensib" min="-2" pref="194" max="-2" attributes="0"/>
+                          <Component id="tolerX" min="-2" pref="194" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           <Component id="tolY" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -109,7 +109,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="mots" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="style" min="-2" max="-2" attributes="0"/>
+                          <Component id="sensibmax" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
@@ -137,8 +137,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="precis" min="-2" max="-2" attributes="0"/>
-                      <Component id="sensib" min="-2" max="-2" attributes="0"/>
+                      <Component id="tolX" min="-2" max="-2" attributes="0"/>
+                      <Component id="tolerX" min="-2" max="-2" attributes="0"/>
                       <Component id="tolerY" min="-2" max="-2" attributes="0"/>
                       <Component id="tolY" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -148,7 +148,7 @@
                       <Component id="charg" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="suiv" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="mots" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="style" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="sensibmax" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="16" max="32767" attributes="0"/>
               </Group>
@@ -158,14 +158,14 @@
       <SubComponents>
         <Component class="javax.swing.JTextField" name="filepath">
         </Component>
-        <Component class="javax.swing.JLabel" name="precis">
+        <Component class="javax.swing.JLabel" name="tolX">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tol&#xe9;rance X : 50%"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSlider" name="sensib">
+        <Component class="javax.swing.JSlider" name="tolerX">
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="sensibStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="tolerXStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="tolY">
@@ -210,12 +210,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="motsActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="style">
+        <Component class="javax.swing.JCheckBox" name="sensibmax">
           <Properties>
             <Property name="text" type="java.lang.String" value="Sensib. Max."/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="styleActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sensibmaxActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="parc">
@@ -287,7 +287,7 @@
                           </Group>
                           <Component id="analyse" alignment="1" min="-2" pref="209" max="-2" attributes="0"/>
                           <Component id="finParFus" alignment="1" min="-2" pref="209" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="1" min="-2" pref="205" max="-2" attributes="0"/>
+                          <Component id="actu" alignment="1" min="-2" pref="205" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="1" min="-2" pref="205" max="-2" attributes="0"/>
                           <Component id="jLabel4" alignment="1" min="-2" pref="205" max="-2" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
@@ -344,7 +344,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="finParFus" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="actu" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -456,7 +456,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="finParFusActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="actu">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Actualiser"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -464,7 +464,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="actuActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
@@ -659,15 +659,18 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="precisClusterLabel" max="32767" attributes="0"/>
                           <Component id="train" pref="214" max="32767" attributes="0"/>
+                          <Component id="genplanclust" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="cobweb" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="genplanclust" max="32767" attributes="0"/>
+                          <Component id="clusterFus" max="32767" attributes="0"/>
+                          <Component id="precisCluster" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -682,7 +685,13 @@
                       <Component id="train" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="genplanclust" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="560" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="clusterFus" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="precisCluster" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="precisClusterLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="488" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -709,6 +718,29 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="genplanclustActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="clusterFus">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Fusionner clusters"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clusterFusActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JSlider" name="precisCluster">
+              <Properties>
+                <Property name="maximum" type="int" value="5"/>
+                <Property name="minimum" type="int" value="1"/>
+                <Property name="value" type="int" value="2"/>
+              </Properties>
+              <Events>
+                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="precisClusterStateChanged"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="precisClusterLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Profondeur fusion (1 &#xe0; 5) : 2 "/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

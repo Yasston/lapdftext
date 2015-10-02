@@ -27,6 +27,7 @@ import org.jpedal.exception.PdfException;
  */
 public class InterfaceAnnotation extends javax.swing.JFrame {
 
+    /* Interface permettant d'annoter manuellement un PDF.*/
     List<ChunkBlock> chunks;
     List<PageBlock> pages;
     private int pageNum;
@@ -37,7 +38,7 @@ public class InterfaceAnnotation extends javax.swing.JFrame {
     JPedalPageImageExtractor jpe;
 
     /**
-     * Creates new form InterfaceAnnotation
+     * Constructeur
      */
     public InterfaceAnnotation(Document doc, String filepath) throws PdfException, AccessException, EncryptionException {
         initComponents();
@@ -51,11 +52,23 @@ public class InterfaceAnnotation extends javax.swing.JFrame {
         jpe = new JPedalPageImageExtractor();
         jpe.init(filepath);
         chunk.setIcon(new ImageIcon(jpe.getPageImages(pageNum)));
-        this.setSize(pages.get(0).getPageBoxWidth(), pages.get(0).getPageBoxHeight()+80);
+        this.setSize(pages.get(0).getPageBoxWidth(), pages.get(0).getPageBoxHeight() + 80);
         treatment(false);
-        
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ((RTChunkBlock) chunks.get(chunkNum)).setType_annote(type.getText().replaceAll("\\s", ""));
+                dispose();
+            }
+        });
+
     }
 
+    /**
+     * Fonction permettant d'accéder au bloc suivant ou précédent, et appliquant
+     * les modifications effectuées sur le bloc courant
+     *
+     * @param sens
+     */
     public void treatment(boolean sens) {
         if (sens) {
             if (chunkNum < chunks.size() - 1) {
@@ -73,7 +86,7 @@ public class InterfaceAnnotation extends javax.swing.JFrame {
                 pageNum--;
                 chunk.setIcon(new ImageIcon(jpe.getPageImages(pageNum)));
                 chunks = pages.get(pageNum).getAllChunkBlocks(SpatialOrdering.VERTICAL_MODE);
-                chunkNum = chunks.size()-1;
+                chunkNum = chunks.size() - 1;
             }
         }
         lab = new JLabel(/*constructor args here*/) {
@@ -88,7 +101,7 @@ public class InterfaceAnnotation extends javax.swing.JFrame {
         lab.setLocation(0, 0);
         this.getContentPane().add(lab);
         this.getContentPane().setComponentZOrder(lab, 0);
-        type.setText(((RTChunkBlock)chunks.get(chunkNum)).getType_annote());
+        type.setText(((RTChunkBlock) chunks.get(chunkNum)).getType_annote());
     }
 
     /**
@@ -153,19 +166,24 @@ public class InterfaceAnnotation extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Fonction de gestion du bouton "Bloc précédent"
+     */
     private void precActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precActionPerformed
         // TODO add your handling code here:
         this.getContentPane().remove(lab);
         this.getContentPane().repaint();
-        ((RTChunkBlock)chunks.get(chunkNum)).setType_annote(type.getText().replaceAll("\\s", ""));
+        ((RTChunkBlock) chunks.get(chunkNum)).setType_annote(type.getText().replaceAll("\\s", ""));
         treatment(false);
     }//GEN-LAST:event_precActionPerformed
-
+    /**
+     * Fonction de gestion du bouton "Bloc suivant"
+     */
     private void suivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suivActionPerformed
         // TODO add your handling code here:
         this.getContentPane().remove(lab);
         this.getContentPane().repaint();
-        ((RTChunkBlock)chunks.get(chunkNum)).setType_annote(type.getText().replaceAll("\\s", ""));
+        ((RTChunkBlock) chunks.get(chunkNum)).setType_annote(type.getText().replaceAll("\\s", ""));
         treatment(true);
     }//GEN-LAST:event_suivActionPerformed
 

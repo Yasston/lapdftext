@@ -1,7 +1,5 @@
 package edu.isi.bmkeg.pdf.parser;
-
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import org.jpedal.exception.PdfException;
-
-import edu.isi.bmkeg.pdf.classification.ruleBased.RuleBasedChunkClassifier;
 import edu.isi.bmkeg.pdf.extraction.JPedalExtractor;
 import edu.isi.bmkeg.pdf.extraction.JPedalPageImageExtractor;
 import edu.isi.bmkeg.pdf.extraction.exceptions.AccessException;
@@ -23,18 +18,13 @@ import edu.isi.bmkeg.pdf.model.Block;
 import edu.isi.bmkeg.pdf.model.ChunkBlock;
 import edu.isi.bmkeg.pdf.model.Document;
 import edu.isi.bmkeg.pdf.model.PageBlock;
-import edu.isi.bmkeg.pdf.model.RTree.RTChunkBlock;
 import edu.isi.bmkeg.pdf.model.WordBlock;
-import edu.isi.bmkeg.pdf.model.RTree.RTModelFactory;
 import edu.isi.bmkeg.pdf.model.RTree.RTWordBlock;
 import edu.isi.bmkeg.pdf.model.factory.AbstractModelFactory;
 import edu.isi.bmkeg.pdf.model.ordering.SpatialOrdering;
 import edu.isi.bmkeg.pdf.model.spatial.SpatialEntity;
-import edu.isi.bmkeg.pdf.text.SpatiallyOrderedChunkTypeFilteredTextWriter;
-import edu.isi.bmkeg.pdf.xml.OpenAccessXMLWriter;
 import edu.isi.bmkeg.utils.FrequencyCounter;
 import edu.isi.bmkeg.utils.IntegerFrequencyCounter;
-import edu.isi.bmkeg.utils.PageImageOutlineRenderer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +32,6 @@ public class RuleBasedParser implements Parser {
 
     private ArrayList<PageBlock> pageList;
     private JPedalExtractor extractor;
-    private JPedalPageImageExtractor extractorimg;
     private int idGenerator;
     private IntegerFrequencyCounter avgHeightFrequencyCounter;
     private int northSouth;
@@ -51,17 +40,12 @@ public class RuleBasedParser implements Parser {
     protected String path;
     private float multiplicateur;
     private float multiplicateur2;
-    private boolean analyse;
     private boolean modestrict;
 
     public void setChangementStyle(boolean changementStyle) {
         this.modestrict = changementStyle;
     }
-
-    public void setAnalyse(boolean analyse) {
-        this.analyse = analyse;
-    }
-
+    
     public void setMult(float x, float y) {
         this.multiplicateur = x;
         this.multiplicateur2 = y;
@@ -77,12 +61,10 @@ public class RuleBasedParser implements Parser {
 
     public RuleBasedParser(AbstractModelFactory modelFactory) {
         this.multiplicateur = (float) 0.5;
-        this.analyse = false;
         try {
             pageList = new ArrayList<PageBlock>();
 
             extractor = new JPedalExtractor(modelFactory);
-            extractorimg = new JPedalPageImageExtractor();
             idGenerator = 1;
             avgHeightFrequencyCounter = new IntegerFrequencyCounter(1);
             this.modelFactory = modelFactory;
@@ -178,13 +160,11 @@ public class RuleBasedParser implements Parser {
                         /* PageImageOutlineRenderer
                          .createPageImage(page, path, path + "/afterOverlapDeletion_"
                          +docID	+"_"		 + page.getPageNumber() + ".png", 0);*/
-
                     }
                 }
                 document.addPages(pageList);
             }
         } catch (Exception e) {
-
             Logger.getLogger(RuleBasedParser.class.getName()).log(Level.SEVERE, null, e);
             //throw new PdfException(e.getMessage());
         }

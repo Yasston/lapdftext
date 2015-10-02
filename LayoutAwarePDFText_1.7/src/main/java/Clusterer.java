@@ -1,18 +1,14 @@
-
 import edu.isi.bmkeg.pdf.model.ChunkBlock;
 import edu.isi.bmkeg.pdf.model.Document;
 import java.awt.BorderLayout;
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.Cobweb;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.gui.treevisualizer.PlaceNode1;
 import weka.gui.treevisualizer.PlaceNode2;
 import weka.gui.treevisualizer.TreeVisualizer;
 

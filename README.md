@@ -5,7 +5,12 @@ Fork of the original [LAPDF-Text](https://code.google.com/archive/p/lapdftext/) 
 
 You may check the PDF documentation (in French) [here](https://github.com/fauconnier/lapdftext/raw/master/README.pdf).
 
+## Original analysis
 
-![alt text](https://github.com/fauconnier/lapdftext/raw/master/overview.png "Graphical rendering")
+![alt text](https://github.com/fauconnier/lapdftext/raw/master/overview.png "Original analysis")
 
+
+## Swing GUI
+
+![alt text](https://github.com/fauconnier/lapdftext/raw/master/gui.png "Swing GUI")
 

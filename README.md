@@ -14,5 +14,5 @@ You may check the PDF documentation (in French) [here](https://github.com/faucon
 
 ![alt text](https://github.com/fauconnier/lapdftext/raw/master/overview.png "Layout analysis")
 
-
+(picture from [Ramakrishnan et al (2012)](http://www.ncbi.nlm.nih.gov/pubmed/22640904))
 
